@@ -23,8 +23,11 @@ public:
 	int next(int itemId) const;
 	int previous(int itemId) const;
 	int parent(int itemId) const;
-	int child(int itemId) const;
+	int child(int parentItemId, int index = 0) const;
+
 	const char* name(int itemId) const;
+	AbstractMenuValue* value(int itemId) const;
+	const char* valueToString(int itemId) const;
 private:
 	const MenuNode* node;
 };

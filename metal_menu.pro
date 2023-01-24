@@ -12,17 +12,17 @@ UI_DIR = ./tmp/ui
 DESTDIR = $$BUILD_DIR
 
 SOURCES += \
+    abstractmenuitemdelegate.cpp \
+    keyevent.cpp \
     main.cpp \
     menu_main.cpp \
-    menucontroller.cpp \
-    menuhandler.cpp \
-    menumodel.cpp
-
-#HEADERS +=
+    menumodel.cpp \
+    menuview.cpp
 
 HEADERS += \
+    abstractmenuitemdelegate.h \
+    keyevent.h \
     menu_main.h \
-    menucontroller.h \
     menudefines.h \
-    menuhandler.h \
-    menumodel.h
+    menumodel.h \
+    menuview.h

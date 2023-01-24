@@ -9,20 +9,14 @@
 
 enum MenuIds
 {
-	File = 0,
-	Edit = 1,
-	View = 2,
-	Save = 3,
-	Open = 4,
-	Exit = 5,
-	Undo = 6,
-	Redo = 7,
-	View1 = 8,
-	View2 = 9,
+	File = RootMenuId + 1,
+	Open,
+	Exit,
+	Parameters,
+	Param1,
+	Param2,
 };
 
 extern const MenuNode* mainMenu;
-
-extern const MenuHandlerItem* mainMenuHandlers;
 
 #endif // MENU_FILE_H
