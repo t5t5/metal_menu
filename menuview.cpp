@@ -78,12 +78,30 @@ void MenuView::processDown()
 
 void MenuView::processLeft()
 {
+	if (!m_model) { return; }
 
+	int currentMenuId = m_model->child(m_parentItemId, m_currentIndex);
+	if (currentMenuId == NoMenuId) { return; }
+
+	AbstractMenuValue* value = m_model->value(currentMenuId);
+	if (!value) { return; }
+
+	if (!value->previous()) { return; }
+	paint();
 }
 
 void MenuView::processRight()
 {
+	if (!m_model) { return; }
 
+	int currentMenuId = m_model->child(m_parentItemId, m_currentIndex);
+	if (currentMenuId == NoMenuId) { return; }
+
+	AbstractMenuValue* value = m_model->value(currentMenuId);
+	if (!value) { return; }
+
+	if (!value->next()) { return; }
+	paint();
 }
 
 void MenuView::processForward()
