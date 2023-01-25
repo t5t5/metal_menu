@@ -9,9 +9,8 @@
 MenuView::MenuView()
 	: m_model(nullptr)
 	, m_menuItemDelegate(nullptr)
-	, m_parentItemId(NoMenuId)
-	, m_childrenCount(0)
 {
+	reset();
 }
 
 void MenuView::reset()
@@ -19,14 +18,13 @@ void MenuView::reset()
 	if (m_model) {
 		m_parentItemId = RootMenuId;
 		m_childrenCount = m_model->childrenCount(RootMenuId);
-		m_visibleIndex = 0;
-		m_currentIndex = 0;
 	} else {
 		m_parentItemId = NoMenuId;
 		m_childrenCount = 0;
-		m_visibleIndex = 0;
-		m_currentIndex = 0;
 	}
+	m_mode = WalkMode;
+	m_visibleIndex = 0;
+	m_currentIndex = 0;
 	paint();
 }
 
@@ -56,15 +54,7 @@ void MenuView::paint()
 	}
 }
 
-void MenuView::processUp()
-{
-	if (m_currentIndex == 0) { return; }
-	--m_currentIndex;
-	if (m_currentIndex < m_visibleIndex) { --m_visibleIndex; }
-	paint();
-}
-
-void MenuView::processDown()
+void MenuView::walkMode_down()
 {
 	if (m_menuItemDelegate == nullptr) { return; }
 	int rowCount = m_menuItemDelegate->rowCount();
@@ -76,21 +66,50 @@ void MenuView::processDown()
 	paint();
 }
 
-void MenuView::processLeft()
+void MenuView::walkMode_up()
+{
+	if (m_currentIndex == 0) { return; }
+	--m_currentIndex;
+	if (m_currentIndex < m_visibleIndex) { --m_visibleIndex; }
+	paint();
+}
+
+void MenuView::walkMode_forward()
 {
 	if (!m_model) { return; }
 
 	int currentMenuId = m_model->child(m_parentItemId, m_currentIndex);
 	if (currentMenuId == NoMenuId) { return; }
 
-	AbstractMenuValue* value = m_model->value(currentMenuId);
-	if (!value) { return; }
+	if (m_model->hasChild(currentMenuId)) {
+		// если есть подменю, идем в него
+		m_parentItemId = currentMenuId;
+		m_childrenCount = m_model->childrenCount(m_parentItemId);
+		m_visibleIndex = 0;
+		m_currentIndex = 0;
+		paint();
+	} else
+	if (m_model->value(currentMenuId) != nullptr) {
+		// если редактируемое значение, входим в режим редактирования
+		m_mode = EditMode;
+	}
+}
 
-	if (!value->previous()) { return; }
+void MenuView::walkMode_backward()
+{
+	if (!m_model) { return; }
+
+	int parentMenuId = m_model->parent(m_parentItemId);
+	if (parentMenuId == NoMenuId) { return; }
+
+	m_parentItemId = parentMenuId;
+	m_childrenCount = m_model->childrenCount(m_parentItemId);
+	m_visibleIndex = 0;
+	m_currentIndex = 0;
 	paint();
 }
 
-void MenuView::processRight()
+void MenuView::editMode_increase()
 {
 	if (!m_model) { return; }
 
@@ -104,34 +123,48 @@ void MenuView::processRight()
 	paint();
 }
 
-void MenuView::processForward()
+void MenuView::editMode_decrease()
 {
 	if (!m_model) { return; }
 
 	int currentMenuId = m_model->child(m_parentItemId, m_currentIndex);
 	if (currentMenuId == NoMenuId) { return; }
 
-	if (!m_model->hasChild(currentMenuId)) { return; }
+	AbstractMenuValue* value = m_model->value(currentMenuId);
+	if (!value) { return; }
 
-	m_parentItemId = currentMenuId;
-	m_childrenCount = m_model->childrenCount(m_parentItemId);
-	m_visibleIndex = 0;
-	m_currentIndex = 0;
+	if (!value->previous()) { return; }
 	paint();
 }
 
-void MenuView::processBackward()
+void MenuView::editMode_apply()
 {
 	if (!m_model) { return; }
 
-	int parentMenuId = m_model->parent(m_parentItemId);
-	if (parentMenuId == NoMenuId) { return; }
+	int currentMenuId = m_model->child(m_parentItemId, m_currentIndex);
+	if (currentMenuId == NoMenuId) { return; }
 
-	m_parentItemId = parentMenuId;
-	m_childrenCount = m_model->childrenCount(m_parentItemId);
-	m_visibleIndex = 0;
-	m_currentIndex = 0;
+	AbstractMenuValue* value = m_model->value(currentMenuId);
+	if (!value) { return; }
+
+	value->apply();
 	paint();
+	m_mode = WalkMode;
+}
+
+void MenuView::editMode_cancel()
+{
+	if (!m_model) { return; }
+
+	int currentMenuId = m_model->child(m_parentItemId, m_currentIndex);
+	if (currentMenuId == NoMenuId) { return; }
+
+	AbstractMenuValue* value = m_model->value(currentMenuId);
+	if (!value) { return; }
+
+	value->cancel();
+	paint();
+	m_mode = WalkMode;
 }
 
 void MenuView::setModel(MenuModel* model)
@@ -157,22 +190,22 @@ void MenuView::keyEvent(KeyEvent* event)
 {
 	switch (event->key()) {
 	case Up:
-		processUp();
+		(m_mode == WalkMode) ? walkMode_up() : editMode_increase();
 		break;
 	case Down:
-		processDown();
+		(m_mode == WalkMode) ? walkMode_down() : editMode_decrease();
 		break;
 	case Left:
-		processLeft();
+		(m_mode == WalkMode) ? walkMode_up() : editMode_decrease();
 		break;
 	case Right:
-		processRight();
+		(m_mode == WalkMode) ? walkMode_down() : editMode_increase();
 		break;
 	case Forward:
-		processForward();
+		(m_mode == WalkMode) ? walkMode_forward() : editMode_apply();
 		break;
 	case Backward:
-		processBackward();
+		(m_mode == WalkMode) ? walkMode_backward() : editMode_cancel();
 		break;
 	}
 }
