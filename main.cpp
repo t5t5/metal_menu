@@ -8,16 +8,17 @@
 class MenuItemDelegate : public AbstractMenuItemDelegate
 {
 private:
-	static const int RowCount = 2;
+	static const int RowCount = 3;
 	static const int CharCount = 30;
+	static const int ValueCount = 10;
 public:
 	MenuItemDelegate();
 	virtual ~MenuItemDelegate() override;
 
 	virtual int rowCount() const override;
 	virtual int charCount() const override;
-	virtual void paintHead(MenuModel* model, int itemId) override;
-	virtual void paintRow(int index, MenuModel* model, int itemId, int flag) override;
+	virtual void paintHead(MenuModel* model, int itemId, int flag = EmptyFlag) override;
+	virtual void paintRow(int index, MenuModel* model, int itemId, int flag = EmptyFlag) override;
 private:
 	std::string header;
 	std::vector<std::string> rows;
@@ -46,7 +47,7 @@ int MenuItemDelegate::charCount() const
 	return CharCount;
 }
 
-void MenuItemDelegate::paintHead(MenuModel* model, int itemId)
+void MenuItemDelegate::paintHead(MenuModel* model, int itemId, int flag /* = EmptyFlag */)
 {
 	header = (itemId == RootMenuId)
 			? "application"
@@ -54,20 +55,23 @@ void MenuItemDelegate::paintHead(MenuModel* model, int itemId)
 	show();
 }
 
-void MenuItemDelegate::paintRow(int index, MenuModel* model, int itemId, int flag)
+void MenuItemDelegate::paintRow(int index, MenuModel* model, int itemId, int flag /* = EmptyFlag */)
 {
 	if (itemId == NoMenuId) {
 		rows[index].clear();
 	} else {
+		char value[ValueCount];
+		value[0] = 0;
 		auto text = model->name(itemId);
-		auto value = model->valueToString(itemId);
-		auto item = formatItem(text, value, CharCount - 3);
+		auto v = model->value(itemId);
+		if (v) { v->toChar(value, ValueCount); }
+		auto item = formatItem(text, &value[0], CharCount - 3);
 		if ((flag & SelectedItemFlag) != 0) {
 			item = '>' + item;
 		} else {
 			item = ' ' + item;
 		}
-		if ((flag & IsMenuFlag) != 0) {
+		if ((flag & HasSubMenuFlag) != 0) {
 			item = item + '>';;
 		} else {
 			item = item + ' ';

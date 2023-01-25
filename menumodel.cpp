@@ -41,7 +41,6 @@ bool MenuModel::hasParent(int itemId) const
 
 bool MenuModel::hasChild(int itemId) const
 {
-//	return n->childId != -1;
 	return childrenCount(itemId) > 0;
 }
 
@@ -87,7 +86,7 @@ int MenuModel::parent(int itemId) const
 	return n->parentId;
 }
 
-int MenuModel::child(int parentItemId, int index /* = 0 1*/) const
+int MenuModel::child(int parentItemId, int index /* = 0 */) const
 {
 	const MenuNode* n = node;
 	int i = -1;
@@ -112,12 +111,4 @@ AbstractMenuValue* MenuModel::value(int itemId) const
 {
 	auto n = findMenuNode(node, itemId);
 	return (n == nullptr) ? nullptr : n->value;
-}
-
-const char* MenuModel::valueToString(int itemId) const
-{
-	auto n = findMenuNode(node, itemId);
-	return (n == nullptr)
-			? nullptr
-			: ((n->value) ? n->value->toString() : nullptr);
 }

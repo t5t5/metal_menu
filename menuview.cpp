@@ -1,7 +1,6 @@
 #include "menuview.h"
 
 #include <algorithm>
-#include <string.h>
 
 #include "abstractmenuitemdelegate.h"
 #include "keyevent.h"
@@ -35,7 +34,8 @@ void MenuView::paint()
 {
 	if ((m_menuItemDelegate == nullptr) || (m_model == nullptr)) { return; }
 
-	m_menuItemDelegate->paintHead(m_model, m_parentItemId);
+	int flag = m_model->hasParent(m_parentItemId);
+	m_menuItemDelegate->paintHead(m_model, m_parentItemId, flag);
 	int rowCount = m_menuItemDelegate->rowCount();
 	for (int row = 0; row < rowCount; ++row) {
 		int index = m_visibleIndex + row;
@@ -51,7 +51,7 @@ void MenuView::paint()
 		}
 		if ((row == 0) && (m_visibleIndex != 0)) { flag |= AbstractMenuItemDelegate::ScrollUpFlag; }
 		if ((row == (rowCount - 1)) && (index != row)) { flag |= AbstractMenuItemDelegate::ScrollDownFlag; }
-		if (m_model->hasChild(menuItemId)) { flag |= AbstractMenuItemDelegate::IsMenuFlag; }
+		if (m_model->hasChild(menuItemId)) { flag |= AbstractMenuItemDelegate::HasSubMenuFlag; }
 		m_menuItemDelegate->paintRow(row, m_model, menuItemId, flag);
 	}
 }

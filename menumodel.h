@@ -27,7 +27,6 @@ public:
 
 	const char* name(int itemId) const;
 	AbstractMenuValue* value(int itemId) const;
-	const char* valueToString(int itemId) const;
 private:
 	const MenuNode* node;
 };

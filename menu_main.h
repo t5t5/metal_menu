@@ -15,6 +15,7 @@ enum MenuIds
 	Parameters,
 	Param1,
 	Param2,
+	Param3,
 };
 
 extern const MenuNode* mainMenu;

@@ -9,8 +9,6 @@
 #include <limits>
 
 using MenuId = char;
-//using MenuFunction = std::function<void(int)>;
-
 const MenuId NoMenuId = -1;
 const MenuId RootMenuId = 0;
 
@@ -25,7 +23,7 @@ public:
 	virtual void apply() = 0;
 	virtual void cancel() = 0;
 
-	virtual const char* toString() const = 0;
+	virtual void toChar(char* out, int size) const = 0;
 };
 
 class MenuNoValue : public AbstractMenuValue
@@ -37,7 +35,7 @@ public:
 	virtual bool previous() override { return false; }
 	virtual void apply() override { }
 	virtual void cancel() override { }
-	virtual const char* toString() const override { return nullptr; }
+	virtual void toChar(char*, int) const override { }
 };
 
 template <typename T>
@@ -89,7 +87,10 @@ public:
 		m_value = *m_valuePtr;
 	}
 
-	virtual const char* toString() const override { return nullptr; }
+	virtual void toChar(char* out, int size) const override
+	{
+		snprintf(out, size, "%d", m_value);
+	}
 private:
 	T* m_valuePtr;
 	T m_value;
@@ -105,13 +106,5 @@ struct MenuNode
 	const char* name;
 	AbstractMenuValue* value;
 };
-
-//struct MenuHandlerItem
-//{
-//	MenuFunction function;
-//	MenuId id;
-
-//	MenuHandlerItem(MenuId i, MenuFunction f) : function(f) , id(i) { }
-//};
 
 #endif // MENUNODE_H
