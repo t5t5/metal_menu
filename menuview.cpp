@@ -50,10 +50,50 @@ void MenuView::paint()
 			menuItemId = NoMenuId;
 		}
 		if ((row == 0) && (m_visibleIndex != 0)) { flag |= AbstractMenuItemDelegate::ScrollUpFlag; }
-		if ((row == (rowCount - 1)) && (index != row)) { flag |= AbstractMenuItemDelegate::ScrollDownFlag; }
+		if ((row == (rowCount - 1)) && (index != (m_childrenCount - 1))) { flag |= AbstractMenuItemDelegate::ScrollDownFlag; }
 		if (m_model->hasChild(menuItemId)) { flag |= AbstractMenuItemDelegate::HasSubMenuFlag; }
 		m_menuItemDelegate->paintRow(row, m_model, menuItemId, flag);
 	}
+}
+
+void MenuView::processUp()
+{
+	if (m_currentIndex == 0) { return; }
+	--m_currentIndex;
+	if (m_currentIndex < m_visibleIndex) { --m_visibleIndex; }
+	paint();
+}
+
+void MenuView::processDown()
+{
+	if (m_menuItemDelegate == nullptr) { return; }
+	int rowCount = m_menuItemDelegate->rowCount();
+
+	if (m_currentIndex == (m_childrenCount - 1)) { return; }
+	++m_currentIndex;
+	if ((m_visibleIndex + rowCount) == m_currentIndex) { ++m_visibleIndex; }
+
+	paint();
+}
+
+void MenuView::processLeft()
+{
+
+}
+
+void MenuView::processRight()
+{
+
+}
+
+void MenuView::processForward()
+{
+
+}
+
+void MenuView::processBackward()
+{
+
 }
 
 void MenuView::setModel(MenuModel* model)
@@ -79,16 +119,22 @@ void MenuView::keyEvent(KeyEvent* event)
 {
 	switch (event->key()) {
 	case Up:
+		processUp();
 		break;
 	case Down:
+		processDown();
 		break;
 	case Left:
+		processLeft();
 		break;
 	case Right:
+		processRight();
 		break;
 	case Forward:
+		processForward();
 		break;
 	case Backward:
+		processBackward();
 		break;
 	}
 }

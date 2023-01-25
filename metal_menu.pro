@@ -1,7 +1,6 @@
-QT += core testlib
-QT -= gui
+QT += core gui widgets
 
-CONFIG += c++17 console
+CONFIG += c++17
 CONFIG -= app_bundle
 CONFIG -= debug_and_release debug_and_release_target
 
@@ -16,6 +15,7 @@ SOURCES += \
     keyevent.cpp \
     main.cpp \
     menu_main.cpp \
+    menudialog.cpp \
     menumodel.cpp \
     menuview.cpp
 
@@ -24,5 +24,9 @@ HEADERS += \
     keyevent.h \
     menu_main.h \
     menudefines.h \
+    menudialog.h \
     menumodel.h \
     menuview.h
+
+FORMS += \
+    menudialog.ui

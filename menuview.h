@@ -25,6 +25,13 @@ private:
 	void reset();
 	void paint();
 
+	void processUp();
+	void processDown();
+	void processLeft();
+	void processRight();
+	void processForward();
+	void processBackward();
+
 	MenuModel* m_model;
 	AbstractMenuItemDelegate* m_menuItemDelegate;
 
