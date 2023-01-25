@@ -88,12 +88,32 @@ void MenuView::processRight()
 
 void MenuView::processForward()
 {
+	if (!m_model) { return; }
 
+	int currentMenuId = m_model->child(m_parentItemId, m_currentIndex);
+	if (currentMenuId == NoMenuId) { return; }
+
+	if (!m_model->hasChild(currentMenuId)) { return; }
+
+	m_parentItemId = currentMenuId;
+	m_childrenCount = m_model->childrenCount(m_parentItemId);
+	m_visibleIndex = 0;
+	m_currentIndex = 0;
+	paint();
 }
 
 void MenuView::processBackward()
 {
+	if (!m_model) { return; }
 
+	int parentMenuId = m_model->parent(m_parentItemId);
+	if (parentMenuId == NoMenuId) { return; }
+
+	m_parentItemId = parentMenuId;
+	m_childrenCount = m_model->childrenCount(m_parentItemId);
+	m_visibleIndex = 0;
+	m_currentIndex = 0;
+	paint();
 }
 
 void MenuView::setModel(MenuModel* model)
