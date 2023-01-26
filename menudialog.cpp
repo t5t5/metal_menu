@@ -25,10 +25,10 @@ public:
 public:
 	void setOutWidget(QTextEdit* widget);
 private:
-	std::string header;
-	std::vector<std::string> rows;
+	QString header;
+	QVector<QString> rows;
 
-	std::string formatItem(const char* name, const char* value, int size);
+	QString formatItem(const char* name, const char* value, int size);
 
 	void show();
 
@@ -58,11 +58,11 @@ int MenuItemDelegate::charCount() const
 void MenuItemDelegate::paintHead(MenuModel* model, int itemId, int flag /* = EmptyFlag */)
 {
 	header = (itemId == RootMenuId)
-			? "application"
-			: model->name(itemId);
+			? QString::fromUtf8("application")
+			: QString::fromUtf8(model->name(itemId));
 	if (flag == ParameterEditFlag) {
 		int spaceSize = (CharCount - header.size() - 1);
-		header.append(spaceSize, ' ');
+		header.append(QString(spaceSize, ' '));
 		header.append("*");
 	}
 	show();
@@ -107,18 +107,20 @@ void MenuItemDelegate::setOutWidget(QTextEdit* w)
 	widget = w;
 }
 
-std::string MenuItemDelegate::formatItem(const char* name, const char* value, int size)
+QString MenuItemDelegate::formatItem(const char* name, const char* value, int size)
 {
-	int nameSize = (name != nullptr) ? strlen(name) : 0;
-	int valueSize = (value != nullptr) ? strlen(value) : 0;
+	QString n = QString::fromUtf8(name);
+	QString v = QString::fromUtf8(value);
+	int nameSize = (name != nullptr) ? n.size() : 0;
+	int valueSize = (value != nullptr) ? v.size() : 0;
 	int spaceSize = (size - nameSize - valueSize);
 	if (spaceSize < 0) { spaceSize = 0; }
 //	strncpy_s(buffer, size, name, nameSize);
 //	memset(buffer + nameSize, ' ', spaceSize);
 //	strncpy_s(buffer + nameSize + spaceSize, size - nameSize - spaceSize, value, valueSize);
 
-	std::string result = name;
-	result.append(spaceSize, ' ');
+	QString result = name;
+	result.append(QString(spaceSize, ' '));
 	result.append(value == nullptr ? "" : value);
 	return result;
 }
@@ -129,10 +131,10 @@ void MenuItemDelegate::show()
 	widget->clear();
 
 	QString text = QString("%1\n%2\n").arg(
-			QString::fromStdString(header),
+			header,
 			QString(CharCount, '-'));
 	for (const auto& row : rows) {
-		text.append(QString("%1\n").arg(QString::fromStdString(row)));
+		text.append(QString("%1\n").arg(row));
 	}
 	widget->setPlainText(text);
 }
