@@ -89,6 +89,7 @@ void MenuView::walkMode_forward()
 	int currentMenuId = m_model->child(m_parentItemId, m_currentIndex);
 	if (currentMenuId == NoMenuId) { return; }
 
+	AbstractMenuAction* action = nullptr;
 	if (m_model->hasChild(currentMenuId)) {
 		// если есть подменю, идем в него
 		m_parentItemId = currentMenuId;
@@ -99,6 +100,10 @@ void MenuView::walkMode_forward()
 	if (m_model->value(currentMenuId) != nullptr) {
 		// если редактируемое значение, входим в режим редактирования
 		m_mode = EditMode;
+	} else
+	if ((action = m_model->action(currentMenuId)) != nullptr) {
+		// если на пункт назначено действие, выполняем
+		action->call();
 	}
 	paint();
 }

@@ -27,6 +27,7 @@ public:
 
 	const char* name(int itemId) const;
 	AbstractMenuValue* value(int itemId) const;
+	AbstractMenuAction* action(int itemId) const;
 private:
 	const MenuNode* node;
 };

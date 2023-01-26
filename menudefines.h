@@ -26,6 +26,14 @@ public:
 	virtual void toChar(char* out, int size) const = 0;
 };
 
+class AbstractMenuAction
+{
+public:
+	virtual ~AbstractMenuAction() { }
+
+	virtual void call() = 0;
+};
+
 class MenuNoValue : public AbstractMenuValue
 {
 public:
@@ -52,13 +60,16 @@ public:
 		, m_step(step)
 		, m_min(min)
 		, m_max(max)
+		, m_isEditing(false)
 	{ }
 	virtual ~NumberMenuValue() override { }
 
 	virtual bool next() override
 	{
+		if (!m_isEditing) { m_value = *m_valuePtr; }
 		auto v = m_value + m_step;
 		if (v <= m_max) {
+			m_isEditing = true;
 			m_value = v;
 			return true;
 		} else {
@@ -67,8 +78,10 @@ public:
 	}
 	virtual bool previous() override
 	{
+		if (!m_isEditing) { m_value = *m_valuePtr; }
 		auto v = m_value - m_step;
 		if (v >= m_min) {
+			m_isEditing = true;
 			m_value = v;
 			return true;
 		} else {
@@ -79,17 +92,18 @@ public:
 	{
 		if (m_value != *m_valuePtr) {
 			*m_valuePtr = m_value;
-			// TODO: event about update
 		}
+		m_isEditing = false;
 	}
 	virtual void cancel() override
 	{
-		m_value = *m_valuePtr;
+		m_isEditing = false;
 	}
 
 	virtual void toChar(char* out, int size) const override
 	{
-		snprintf(out, size, "%d", m_value);
+		T v = m_isEditing ? m_value : *m_valuePtr;
+		snprintf(out, size, "%d", v);
 	}
 private:
 	T* m_valuePtr;
@@ -97,6 +111,30 @@ private:
 	T m_step;
 	T m_min;
 	T m_max;
+	bool m_isEditing;
+};
+
+template <typename T>
+class SetValueMenuAction : public AbstractMenuAction
+{
+public:
+	SetValueMenuAction(
+			T* valuePtr,
+			T value)
+		: m_valuePtr(valuePtr)
+		, m_value(value)
+	{
+	}
+
+	virtual ~SetValueMenuAction() override { }
+
+	virtual void call() override
+	{
+		*m_valuePtr = m_value;
+	}
+private:
+	T* m_valuePtr;
+	T m_value;
 };
 
 struct MenuNode
@@ -105,6 +143,7 @@ struct MenuNode
 	MenuId parentId;
 	const char* name;
 	AbstractMenuValue* value;
+	AbstractMenuAction* action;
 };
 
 #endif // MENUNODE_H

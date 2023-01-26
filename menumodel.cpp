@@ -112,3 +112,9 @@ AbstractMenuValue* MenuModel::value(int itemId) const
 	auto n = findMenuNode(node, itemId);
 	return (n == nullptr) ? nullptr : n->value;
 }
+
+AbstractMenuAction* MenuModel::action(int itemId) const
+{
+	auto n = findMenuNode(node, itemId);
+	return (n == nullptr) ? nullptr : n->action;
+}
