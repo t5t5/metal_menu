@@ -13,7 +13,7 @@ enum MenuIds
 	Exit,
 	Parameters,
 	Param1,
-	Param2,
+	BaudRate,
 	Param3,
 	ResetParam3,
 	Languages,
