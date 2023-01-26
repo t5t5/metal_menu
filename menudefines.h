@@ -120,15 +120,13 @@ template <typename T>
 class EnumMenuValue : public AbstractMenuValue
 {
 public:
-	struct EnumItem { T item; };
-
-	EnumMenuValue(T* valuePtr, const EnumItem* item, int N)
+	template <int N>
+	EnumMenuValue(T* valuePtr, const T(& item)[N])
 		: m_valuePtr(valuePtr)
 		, m_value(T())
 		, m_items(item)
 		, m_count(N)
 		, m_index(findIndex(*valuePtr))
-//		, m_items(reinterpret_cast<const EnumItem*>(&items[0]))
 		, m_isEditing(false)
 	{
 	}
@@ -163,7 +161,7 @@ public:
 
 	virtual void apply() override
 	{
-		auto value = m_items[m_index].item;
+		auto value = m_items[m_index];
 		if (value != *m_valuePtr) {
 			*m_valuePtr = value;
 		}
@@ -178,7 +176,7 @@ public:
 	virtual void toChar(char* out, int size) const override
 	{
 		T v = m_isEditing
-			? m_items[m_index].item
+			? m_items[m_index]
 			: *m_valuePtr;
 		snprintf(out, size, "%d", static_cast<int>(v));
 	}
@@ -186,14 +184,14 @@ private:
 	int findIndex(T value) const
 	{
 		for (int index = 0; index < m_count; ++index) {
-			if (m_items[index].item == value) { return index; }
+			if (m_items[index] == value) { return index; }
 		}
 		return 0;
 	}
 
 	T* m_valuePtr;
 	T m_value;
-	const EnumItem* m_items;
+	const T* m_items;
 	int m_count;
 	int m_index;
 	bool m_isEditing;
