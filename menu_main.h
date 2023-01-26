@@ -15,6 +15,7 @@ enum MenuIds
 	Param1,
 	BaudRateInt,
 	BaudRateEnum,
+	BaudRateText,
 	Param3,
 	ResetParam3,
 	Languages,
