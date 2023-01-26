@@ -104,7 +104,9 @@ const char* MenuModel::name(int itemId) const
 {
 	if (itemId == RootMenuId) { return nullptr; }
 	auto n = findMenuNode(node, itemId);
-	return (n == nullptr) ? nullptr : n->name;
+	return (n == nullptr)
+		? nullptr
+		: (language == 1) ? n->translate : n->name;
 }
 
 AbstractMenuValue* MenuModel::value(int itemId) const

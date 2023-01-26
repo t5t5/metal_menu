@@ -9,14 +9,16 @@
 
 enum MenuIds
 {
-	File = RootMenuId + 1,
-	Open,
+	Application = RootMenuId + 1,
 	Exit,
 	Parameters,
 	Param1,
 	Param2,
 	Param3,
 	ResetParam3,
+	Languages,
+	RusLang,
+	EngLang,
 };
 
 extern const MenuNode* mainMenu;

@@ -12,6 +12,8 @@ using MenuId = char;
 const MenuId NoMenuId = -1;
 const MenuId RootMenuId = 0;
 
+extern int language;
+
 class AbstractMenuValue
 {
 public:
@@ -142,6 +144,7 @@ struct MenuNode
 	MenuId id;
 	MenuId parentId;
 	const char* name;
+	const char* translate;
 	AbstractMenuValue* value;
 	AbstractMenuAction* action;
 };
