@@ -32,7 +32,12 @@ void MenuView::paint()
 {
 	if ((m_menuItemDelegate == nullptr) || (m_model == nullptr)) { return; }
 
-	int flag = m_model->hasParent(m_parentItemId);
+	int flag = m_model->hasParent(m_parentItemId)
+			? AbstractMenuItemDelegate::HasParentMenuFlag
+			: AbstractMenuItemDelegate::EmptyFlag;
+	if (m_mode == EditMode) {
+			flag |= AbstractMenuItemDelegate::ParameterEditFlag;
+	}
 	m_menuItemDelegate->paintHead(m_model, m_parentItemId, flag);
 	int rowCount = m_menuItemDelegate->rowCount();
 	for (int row = 0; row < rowCount; ++row) {
@@ -42,6 +47,9 @@ void MenuView::paint()
 		if (index < m_childrenCount) {
 			if (m_currentIndex == index) {
 				flag = AbstractMenuItemDelegate::SelectedItemFlag;
+				if (m_mode == EditMode) {
+					flag |= AbstractMenuItemDelegate::ParameterEditFlag;
+				}
 			}
 			menuItemId = m_model->child(m_parentItemId, index);
 		} else {
@@ -87,12 +95,12 @@ void MenuView::walkMode_forward()
 		m_childrenCount = m_model->childrenCount(m_parentItemId);
 		m_visibleIndex = 0;
 		m_currentIndex = 0;
-		paint();
 	} else
 	if (m_model->value(currentMenuId) != nullptr) {
 		// если редактируемое значение, входим в режим редактирования
 		m_mode = EditMode;
 	}
+	paint();
 }
 
 void MenuView::walkMode_backward()
@@ -148,8 +156,8 @@ void MenuView::editMode_apply()
 	if (!value) { return; }
 
 	value->apply();
-	paint();
 	m_mode = WalkMode;
+	paint();
 }
 
 void MenuView::editMode_cancel()
@@ -163,8 +171,8 @@ void MenuView::editMode_cancel()
 	if (!value) { return; }
 
 	value->cancel();
-	paint();
 	m_mode = WalkMode;
+	paint();
 }
 
 void MenuView::setModel(MenuModel* model)

@@ -60,6 +60,11 @@ void MenuItemDelegate::paintHead(MenuModel* model, int itemId, int flag /* = Emp
 	header = (itemId == RootMenuId)
 			? "application"
 			: model->name(itemId);
+	if (flag == ParameterEditFlag) {
+		int spaceSize = (CharCount - header.size() - 1);
+		header.append(spaceSize, ' ');
+		header.append("*");
+	}
 	show();
 }
 
@@ -75,7 +80,7 @@ void MenuItemDelegate::paintRow(int index, MenuModel* model, int itemId, int fla
 		if (v) { v->toChar(value, ValueCount); }
 		auto item = formatItem(text, &value[0], CharCount - 3);
 		if ((flag & SelectedItemFlag) != 0) {
-			item = '>' + item;
+			item = (((flag & ParameterEditFlag) == 0) ? '>' : '*') + item;
 		} else {
 			item = ' ' + item;
 		}

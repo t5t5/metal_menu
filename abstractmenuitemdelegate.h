@@ -18,6 +18,7 @@ public:
 		ScrollDownFlag    = 0x04,
 		HasSubMenuFlag    = 0x08,
 		HasParentMenuFlag = 0x10,
+		ParameterEditFlag = 0x20,
 	};
 
 	virtual ~AbstractMenuItemDelegate() = default;
