@@ -16,10 +16,11 @@ MenuView::MenuView()
 void MenuView::reset()
 {
 	m_parentIndex = MenuModelIndex();
-	m_childrenCount = m_model ? m_model->lineCount(m_parentIndex) : 0;
+	m_currentIndex = m_model ? m_model->index(0, m_parentIndex) : MenuModelIndex();
+	m_lineCount = m_model ? m_model->lineCount(m_parentIndex) : 0;
 	m_mode = WalkMode;
 	m_visibleIndex = 0;
-	m_currentIndex = 0;
+	m_visibleRows = m_menuItemDelegate ? m_menuItemDelegate->rowCount() : 0;
 	paint();
 }
 
@@ -34,14 +35,13 @@ void MenuView::paint()
 		flag |= AbstractMenuItemDelegate::ParameterEditFlag;
 	}
 	m_menuItemDelegate->paintHead(m_parentIndex, flag);
-	int rowCount = m_menuItemDelegate->rowCount();
 
-	for (int row = 0; row < rowCount; ++row) {
+	for (int row = 0; row < m_visibleRows; ++row) {
 		int rowIndex = m_visibleIndex + row;
 		MenuModelIndex menuIndex;
 		int flag = AbstractMenuItemDelegate::EmptyFlag;
-		if (rowIndex < m_childrenCount) {
-			if (m_currentIndex == rowIndex) {
+		if (rowIndex < m_lineCount) {
+			if (m_currentIndex.line() == rowIndex) {
 				flag = AbstractMenuItemDelegate::SelectedItemFlag;
 				if (m_mode == EditMode) {
 					flag |= AbstractMenuItemDelegate::ParameterEditFlag;
@@ -49,8 +49,12 @@ void MenuView::paint()
 			}
 			menuIndex = m_model->index(rowIndex, m_parentIndex);
 		}
-		if ((row == 0) && (m_visibleIndex != 0)) { flag |= AbstractMenuItemDelegate::ScrollUpFlag; }
-		if ((row == (rowCount - 1)) && (rowIndex != (m_childrenCount - 1))) { flag |= AbstractMenuItemDelegate::ScrollDownFlag; }
+		if ((row == 0) && (m_visibleIndex != 0)) {
+			flag |= AbstractMenuItemDelegate::ScrollUpFlag;
+		}
+		if ((row == (m_visibleRows - 1)) && (rowIndex != (m_lineCount - 1))) {
+			flag |= AbstractMenuItemDelegate::ScrollDownFlag;
+		}
 		if (m_model->hasChildren(menuIndex)) {
 			flag |= AbstractMenuItemDelegate::HasSubMenuFlag;
 		}
@@ -60,96 +64,68 @@ void MenuView::paint()
 
 void MenuView::walkMode_down()
 {
-	if (m_menuItemDelegate == nullptr) { return; }
-
-	if (m_currentIndex == (m_childrenCount - 1)) { return; }
-	++m_currentIndex;
-	int rowCount = m_menuItemDelegate->rowCount();
-	if ((m_visibleIndex + rowCount) == m_currentIndex) { ++m_visibleIndex; }
-
+	if (m_currentIndex.line() == (m_lineCount - 1)) { return; }
+	m_currentIndex = m_model->index(m_currentIndex.line() + 1, m_parentIndex);
+	if ((m_visibleIndex + m_visibleRows) == m_currentIndex.line()) { ++m_visibleIndex; }
 	paint();
 }
 
 void MenuView::walkMode_up()
 {
-	if (m_currentIndex == 0) { return; }
-	--m_currentIndex;
-	if (m_currentIndex < m_visibleIndex) { --m_visibleIndex; }
+	if (m_currentIndex.line() == 0) { return; }
+	m_currentIndex = m_model->index(m_currentIndex.line() - 1, m_parentIndex);
+	if (m_currentIndex.line() < m_visibleIndex) { --m_visibleIndex; }
 	paint();
 }
 
 void MenuView::walkMode_forward()
 {
-	MenuModelIndex currentMenuIndex = m_model->index(m_currentIndex, m_parentIndex);
-	if (!currentMenuIndex.isValid()) { return; }
-
-	int childrenCount = m_model->lineCount(currentMenuIndex);
-	if (childrenCount) {
+	int lineCount = m_model->lineCount(m_currentIndex);
+	if (lineCount) {
 		// если есть подменю, идем в него
-		m_parentIndex = currentMenuIndex;
-		m_childrenCount = childrenCount;
+		m_parentIndex = m_currentIndex;
+		m_currentIndex = m_model->index(0, m_parentIndex);
+		m_lineCount = lineCount;
 		m_visibleIndex = 0;
-		m_currentIndex = 0;
 	} else
-	if (currentMenuIndex.value() != nullptr) {
+	if (m_currentIndex.value() != nullptr) {
 		// если редактируемое значение, входим в режим редактирования
 		m_mode = EditMode;
 	} else
-	if (currentMenuIndex.action() != nullptr) {
+	if (m_currentIndex.action() != nullptr) {
 		// если на пункт назначено действие, выполняем
-		currentMenuIndex.action()->call();
+		m_currentIndex.action()->call();
 	}
 	paint();
 }
 
 void MenuView::walkMode_backward()
 {
-	if (!m_model) { return; }
-
 	if (!m_parentIndex.isValid()) { return; } // выше некуда
 	m_parentIndex = m_parentIndex.parent();
-	m_childrenCount = m_model->lineCount(m_parentIndex);
+	m_currentIndex = m_model->index(0, m_parentIndex);
+	m_lineCount = m_model->lineCount(m_parentIndex);
 	m_visibleIndex = 0;
-	m_currentIndex = 0;
 	paint();
 }
 
 void MenuView::editMode_increase()
 {
-	if (!m_model) { return; }
-
-	MenuModelIndex currentIndex = m_model->index(m_currentIndex, m_parentIndex);
-	if (!currentIndex.isValid()) { return; }
-
-	AbstractMenuValue* value = currentIndex.value();
-	if (!value) { return; }
-
-	if (!value->next()) { return; }
+	AbstractMenuValue* value = m_currentIndex.value();
+	if (!value || !value->next()) { return; }
 	paint();
 }
 
 void MenuView::editMode_decrease()
 {
-	if (!m_model) { return; }
-
-	MenuModelIndex currentIndex = m_model->index(m_currentIndex, m_parentIndex);
-	if (!currentIndex.isValid()) { return; }
-
-	AbstractMenuValue* value = currentIndex.value();
-	if (!value) { return; }
-
-	if (!value->previous()) { return; }
+	AbstractMenuValue* value = m_currentIndex.value();
+	if (!value || !value->previous()) { return; }
 	paint();
 }
 
 void MenuView::editMode_apply()
 {
-	if (!m_model) { return; }
-
-	MenuModelIndex currentIndex = m_model->index(m_currentIndex, m_parentIndex);
-	if (!currentIndex.isValid()) { return; }
-
-	AbstractMenuValue* value = currentIndex.value();
+	AbstractMenuValue* value = m_currentIndex.value();
 	if (!value) { return; }
 
 	value->apply();
@@ -159,12 +135,7 @@ void MenuView::editMode_apply()
 
 void MenuView::editMode_cancel()
 {
-	if (!m_model) { return; }
-
-	MenuModelIndex currentIndex = m_model->index(m_currentIndex, m_parentIndex);
-	if (!currentIndex.isValid()) { return; }
-
-	AbstractMenuValue* value = currentIndex.value();
+	AbstractMenuValue* value = m_currentIndex.value();
 	if (!value) { return; }
 
 	value->cancel();
@@ -193,6 +164,8 @@ MenuModel* MenuView::model() const
 
 void MenuView::keyEvent(KeyEvent* event)
 {
+	if (!m_model) { return; }
+
 	switch (event->key()) {
 	case Up:
 		(m_mode == WalkMode) ? walkMode_up() : editMode_increase();

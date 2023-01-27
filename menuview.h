@@ -44,10 +44,12 @@ private:
 
 	Mode m_mode;
 	MenuModelIndex m_parentIndex;
-	int m_childrenCount;
+	MenuModelIndex m_currentIndex;
+	int m_lineCount;
 	int m_visibleIndex;
+	int m_visibleRows;
 
-	int m_currentIndex;
+//	int m_currentIndex;
 
 };
 
