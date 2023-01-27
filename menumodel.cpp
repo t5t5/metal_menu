@@ -1,122 +1,96 @@
 #include "menumodel.h"
 
-const MenuNode* findMenuNode(const MenuNode* n, int itemId)
-{
-	while (n->id != NoMenuId) {
-		if (n->id == itemId) { return n; }
-		++n;
-	}
-	return nullptr;
-}
-
-// ------------------------------------------------------------------------
-
 MenuModel::MenuModel(const MenuNode* n)
 	: node(n)
 {
 }
 
-bool MenuModel::hasNext(int itemId) const
+MenuModelIndex MenuModel::index(
+		int line, const MenuModelIndex& parent /* = MenuModelIndex() */) const
 {
-	auto n = findMenuNode(node, itemId);
-	if (n == nullptr) { return false; }
-	auto nn = n + 1;
-	return ((nn->id != NoMenuId) && (nn->parentId == n->parentId));
-}
+	int parentItemId = (parent.isValid())
+		? parent.m_node->id
+		: RootMenuId;
 
-bool MenuModel::hasPrevious(int itemId) const
-{
-	auto n = findMenuNode(node, itemId);
-	if ((n == nullptr) || (n == node)) { return false; }
-	auto pn = n - 1;
-	return pn->parentId == n->parentId;
-}
-
-bool MenuModel::hasParent(int itemId) const
-{
-	auto n = findMenuNode(node, itemId);
-	if (n == nullptr) { return false; }
-	return n->parentId != RootMenuId;
-}
-
-bool MenuModel::hasChild(int itemId) const
-{
-	return childrenCount(itemId) > 0;
-}
-
-int MenuModel::childrenCount(int itemId) const
-{
-	const MenuNode* n = node;
-	int count = 0;
-	while (n->id != NoMenuId) {
-		if (n->parentId == itemId) { ++count; }
-		++n;
-	}
-	return count;
-}
-
-int MenuModel::id(int itemId) const
-{
-	auto n = findMenuNode(node, itemId);
-	return (n == nullptr) ? NoMenuId : n->id;
-}
-
-int MenuModel::next(int itemId) const
-{
-	auto n = findMenuNode(node, itemId);
-	if (n == nullptr) { return NoMenuId; }
-	auto nn = n + 1;
-	return ((nn->id != NoMenuId) && (nn->parentId == n->parentId))
-		? nn->id
-		: NoMenuId;
-}
-
-int MenuModel::previous(int itemId) const
-{
-	auto n = findMenuNode(node, itemId);
-	if ((n == nullptr) || (n == node)) { return NoMenuId; }
-	auto pn = n - 1;
-	return (pn->parentId == n->parentId) ? pn->id : NoMenuId;
-}
-
-int MenuModel::parent(int itemId) const
-{
-	auto n = findMenuNode(node, itemId);
-	if (n == nullptr) { return NoMenuId; }
-	return n->parentId;
-}
-
-int MenuModel::child(int parentItemId, int index /* = 0 */) const
-{
 	const MenuNode* n = node;
 	int i = -1;
 	while (n->id != NoMenuId) {
 		if (n->parentId == parentItemId) {
 			++i;
-			if (i == index) { return n->id; }
+			if (i == line) { return MenuModelIndex(this, n, i); }
 		}
 		++n;
 	}
-	return NoMenuId;
+	return MenuModelIndex();
 }
 
-const char* MenuModel::name(int itemId) const
+bool MenuModel::hasChildren(const MenuModelIndex& parent) const
 {
-	if (itemId == RootMenuId) { return nullptr; }
-	auto n = findMenuNode(node, itemId);
-	return (n == nullptr)
-		? nullptr
-		: (language == 1) ? n->translate : n->name;
+	int parentItemId = (parent.isValid())
+		? parent.m_node->id
+		: RootMenuId;
+
+	const MenuNode* n = node;
+	while (n->id != NoMenuId) {
+		if (n->parentId == parentItemId) { return true; }
+		++n;
+	}
+	return false;
 }
 
-AbstractMenuValue* MenuModel::value(int itemId) const
+int MenuModel::lineCount(const MenuModelIndex& parent /* = MenuModelIndex() */) const
 {
-	auto n = findMenuNode(node, itemId);
-	return (n == nullptr) ? nullptr : n->value;
+	int parentItemId = (parent.isValid())
+		? parent.m_node->id
+		: RootMenuId;
+
+	const MenuNode* n = node;
+	int count = 0;
+	while (n->id != NoMenuId) {
+		if (n->parentId == parentItemId) { ++count; }
+		++n;
+	}
+	return count;
 }
 
-AbstractMenuAction* MenuModel::action(int itemId) const
+MenuModelIndex MenuModel::parent(const MenuModelIndex& index) const
 {
-	auto n = findMenuNode(node, itemId);
-	return (n == nullptr) ? nullptr : n->action;
+	if (!index.isValid()) { return MenuModelIndex(); }
+
+	int parentMenuId = index.m_node->parentId;
+	if (parentMenuId == RootMenuId) { return MenuModelIndex(); }
+
+	const MenuNode* n = node;
+	while (n->id != NoMenuId) {
+		if (n->id == parentMenuId) {
+			const MenuNode* nn = node;
+			int i = -1;
+			while (nn->id != NoMenuId) {
+				if (nn->parentId == n->parentId) {
+					++i;
+					if (n == nn) {
+						return MenuModelIndex(this, n, i);
+					}
+				}
+				++nn;
+			}
+		}
+		++n;
+	}
+	return MenuModelIndex();
+}
+
+const char* MenuModel::name(const MenuModelIndex& index) const
+{
+	return index.name();
+}
+
+AbstractMenuValue* MenuModel::value(const MenuModelIndex& index) const
+{
+	return index.value();
+}
+
+AbstractMenuAction* MenuModel::action(const MenuModelIndex& index) const
+{
+	return index.action();
 }

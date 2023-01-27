@@ -17,6 +17,7 @@ SOURCES += \
     menu_main.cpp \
     menudialog.cpp \
     menumodel.cpp \
+    menumodelindex.cpp \
     menuview.cpp
 
 HEADERS += \
@@ -26,6 +27,7 @@ HEADERS += \
     menudefines.h \
     menudialog.h \
     menumodel.h \
+    menumodelindex.h \
     menuview.h
 
 FORMS += \

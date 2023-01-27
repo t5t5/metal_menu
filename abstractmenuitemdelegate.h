@@ -5,7 +5,7 @@
 #pragma once
 #endif
 
-class MenuModel;
+#include "menumodelindex.h"
 
 class AbstractMenuItemDelegate
 {
@@ -26,8 +26,8 @@ public:
 	virtual int rowCount() const = 0;
 	virtual int charCount() const = 0;
 
-	virtual void paintHead(MenuModel* model, int itemId, int flag = EmptyFlag) = 0;
-	virtual void paintRow(int index, MenuModel* model, int itemId, int flag = EmptyFlag) = 0;
+	virtual void paintHead(const MenuModelIndex& index, int flag = EmptyFlag) = 0;
+	virtual void paintRow(int row, const MenuModelIndex& index, int flag = EmptyFlag) = 0;
 };
 
 #endif // ABSTRACTMENUITEMDELEGATE_H

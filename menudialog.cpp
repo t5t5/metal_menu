@@ -20,8 +20,8 @@ public:
 
 	virtual int rowCount() const override;
 	virtual int charCount() const override;
-	virtual void paintHead(MenuModel* model, int itemId, int flag = EmptyFlag) override;
-	virtual void paintRow(int index, MenuModel* model, int itemId, int flag = EmptyFlag) override;
+	virtual void paintHead(const MenuModelIndex& index, int flag) override;
+	virtual void paintRow(int row, const MenuModelIndex& index, int flag) override;
 public:
 	void setOutWidget(QTextEdit* widget);
 private:
@@ -55,11 +55,11 @@ int MenuItemDelegate::charCount() const
 	return CharCount;
 }
 
-void MenuItemDelegate::paintHead(MenuModel* model, int itemId, int flag /* = EmptyFlag */)
+void MenuItemDelegate::paintHead(const MenuModelIndex& index, int flag)
 {
-	header = (itemId == RootMenuId)
-			? QString::fromUtf8("application")
-			: QString::fromUtf8(model->name(itemId));
+	header = (index.isValid())
+			? QString::fromUtf8(index.name())
+			: QString::fromUtf8("application");
 	if (flag == ParameterEditFlag) {
 		int spaceSize = (CharCount - header.size() - 1);
 		header.append(QString(spaceSize, ' '));
@@ -68,15 +68,15 @@ void MenuItemDelegate::paintHead(MenuModel* model, int itemId, int flag /* = Emp
 	show();
 }
 
-void MenuItemDelegate::paintRow(int index, MenuModel* model, int itemId, int flag /* = EmptyFlag */)
+void MenuItemDelegate::paintRow(int row, const MenuModelIndex& index, int flag)
 {
-	if (itemId == NoMenuId) {
-		rows[index].clear();
+	if (!index.isValid()) {
+		rows[row].clear();
 	} else {
 		char value[ValueCount];
 		value[0] = 0;
-		auto text = model->name(itemId);
-		auto v = model->value(itemId);
+		auto text = index.name();
+		auto v = index.value();
 		if (v) { v->toChar(value, ValueCount); }
 		auto item = formatItem(text, &value[0], CharCount - 3);
 		if ((flag & SelectedItemFlag) != 0) {
@@ -97,7 +97,7 @@ void MenuItemDelegate::paintRow(int index, MenuModel* model, int itemId, int fla
 		} else {
 			item = item + ' ';
 		}
-		rows[index] = item;
+		rows[row] = item;
 	}
 	show();
 }

@@ -9,6 +9,8 @@ class AbstractMenuItemDelegate;
 class KeyEvent;
 class MenuModel;
 
+#include "menumodelindex.h"
+
 class MenuView
 {
 public:
@@ -41,7 +43,7 @@ private:
 	AbstractMenuItemDelegate* m_menuItemDelegate;
 
 	Mode m_mode;
-	int m_parentItemId;
+	MenuModelIndex m_parentIndex;
 	int m_childrenCount;
 	int m_visibleIndex;
 

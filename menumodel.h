@@ -7,27 +7,22 @@
 
 #include "menudefines.h"
 
+#include "menumodelindex.h"
+
 class MenuModel
 {
 public:
 	MenuModel(const MenuNode* n);
 
-	bool hasNext(int itemId) const;
-	bool hasPrevious(int itemId) const;
-	bool hasParent(int itemId) const;
-	bool hasChild(int itemId) const;
+	MenuModelIndex index(int line, const MenuModelIndex& parent = MenuModelIndex()) const;
+	MenuModelIndex parent(const MenuModelIndex& index) const;
 
-	int childrenCount(int itemId) const;
+	bool hasChildren(const MenuModelIndex& parent = MenuModelIndex()) const;
+	int lineCount(const MenuModelIndex& parent = MenuModelIndex()) const;
 
-	int id(int itemId) const;
-	int next(int itemId) const;
-	int previous(int itemId) const;
-	int parent(int itemId) const;
-	int child(int parentItemId, int index = 0) const;
-
-	const char* name(int itemId) const;
-	AbstractMenuValue* value(int itemId) const;
-	AbstractMenuAction* action(int itemId) const;
+	const char* name(const MenuModelIndex& index) const;
+	AbstractMenuValue* value(const MenuModelIndex& index) const;
+	AbstractMenuAction* action(const MenuModelIndex& index) const;
 private:
 	const MenuNode* node;
 };
