@@ -279,9 +279,10 @@ class TextMenuValue : public AbstractMenuValue
 public:
 	TextMenuValue(const char* text)
 		: m_text(text)
-		, m_len(strlen(text))
+		, m_len(strlen(text) + 1)
 	{
 	}
+	virtual ~TextMenuValue() override { }
 
 	virtual bool isReadOnly() const override { return true; }
 	virtual bool next() override { return false; }
