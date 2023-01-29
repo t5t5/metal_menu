@@ -1,6 +1,8 @@
 #include "menudialog.h"
 #include "ui_menudialog.h"
 
+#include <QTimer>
+
 #include "abstractmenuitemdelegate.h"
 #include "keyevent.h"
 #include "menumodel.h"
@@ -176,12 +178,22 @@ MenuDialog::MenuDialog(QWidget* parent /* = nullptr */)
 		ui->backwardButton, &QAbstractButton::clicked,
 		this, &MenuDialog::processBackward);
 
+	messageAction = new FunctionMenuAction(
+		[this] () {
+			ui->actionEdit->setText("Message!");
+			QTimer::singleShot(2000, this, [this] () { ui->actionEdit->clear(); });
+		}
+	);
+	exitAction = new FunctionMenuAction([this] () { close(); });
 }
 
 MenuDialog::~MenuDialog()
 {
 	delete ui;
 	if (menuModel) { delete menuModel; }
+
+	if (exitAction) { delete exitAction; }
+	if (messageAction) { delete messageAction; }
 }
 
 void MenuDialog::start()
@@ -193,6 +205,9 @@ void MenuDialog::start()
 	menuView = new MenuView();
 	menuView->setModel(menuModel);
 	menuView->setMenuItemDelegate(menuDelegate);
+
+	menuModel->setAction(Message, messageAction);
+	menuModel->setAction(Exit, exitAction);
 }
 
 void MenuDialog::processUp()

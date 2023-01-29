@@ -10,6 +10,7 @@
 enum MenuIds
 {
 	Application = RootMenuId + 1,
+	Message,
 	Exit,
 	Parameters,
 	Param1,
@@ -23,6 +24,6 @@ enum MenuIds
 	EngLang,
 };
 
-extern const MenuNode* mainMenu;
+extern MenuNode* mainMenu;
 
 #endif // MENU_FILE_H

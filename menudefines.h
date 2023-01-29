@@ -309,6 +309,24 @@ private:
 	T m_value;
 };
 
+class FunctionMenuAction : public AbstractMenuAction
+{
+public:
+	FunctionMenuAction(std::function<void()> function)
+		: m_function(function)
+	{
+	}
+
+	virtual ~FunctionMenuAction() override { }
+
+	virtual void call() override
+	{
+		if (m_function) { m_function(); }
+	}
+private:
+	std::function<void()> m_function;
+};
+
 struct MenuNode
 {
 	MenuId id;

@@ -3,11 +3,10 @@
 #include "menudefines.h"
 #include "menumodel.h"
 
-MenuModelIndex::MenuModelIndex(const MenuModel* model, const MenuNode* node, int line)
+MenuModelIndex::MenuModelIndex(const MenuModel* model, MenuNode* node, int line)
 	: m_model(model)
 	, m_node(node)
 	, m_line(line)
-	, m_count(0)
 {
 }
 
@@ -15,7 +14,6 @@ MenuModelIndex::MenuModelIndex()
 	: m_model(nullptr)
 	, m_node(nullptr)
 	, m_line(0)
-	, m_count(0)
 {
 }
 
@@ -56,4 +54,16 @@ AbstractMenuValue* MenuModelIndex::value() const
 AbstractMenuAction* MenuModelIndex::action() const
 {
 	return m_node ? m_node->action : nullptr;
+}
+
+void MenuModelIndex::setValue(AbstractMenuValue* value) const
+{
+	if (!m_node) { return; }
+	m_node->value = value;
+}
+
+void MenuModelIndex::setAction(AbstractMenuAction* action) const
+{
+	if (!m_node) { return; }
+	m_node->action = action;
 }

@@ -3,6 +3,7 @@
 const char* itemApplication = "Application";
 const char* itemParameters  = "Parameters";
 const char* itemLanguages   = "Languages";
+const char* itemMessage     = "Message";
 const char* itemExit        = "Exit";
 const char* itemParam1      = "Parameter1";
 const char* itemBaudRate1   = "BaudRateInt";
@@ -16,6 +17,7 @@ const char* itemEngLang     = "English";
 const char* itemTrApplication = "Приложение";
 const char* itemTrParameters  = "Параметры";
 const char* itemTrLanguages   = "Языки";
+const char* itemTrMessage     = "Сообщение";
 const char* itemTrExit        = "Выход";
 const char* itemTrParam1      = "Parameter1";
 const char* itemTrBaudRate1   = "Скорость-Int";
@@ -58,11 +60,12 @@ static SetValueMenuAction<int> param3reset(&param3, 100);
 static SetValueMenuAction<int> setEnglish(&language, 0);
 static SetValueMenuAction<int> setRussian(&language, 1);
 
-const MenuNode menu1[] = {
+MenuNode menu1[] = {
 //             id  |   parentId |           name |        translate |              value |      action
 	{  Application,   RootMenuId, itemApplication, itemTrApplication,            nullptr,      nullptr, },
 	{   Parameters,   RootMenuId,  itemParameters,  itemTrParameters,            nullptr,      nullptr, },
 	{    Languages,   RootMenuId,   itemLanguages,   itemTrLanguages,            nullptr,      nullptr, },
+	{      Message,  Application,     itemMessage,     itemTrMessage,            nullptr,      nullptr, },
 	{         Exit,  Application,        itemExit,        itemTrExit,            nullptr,      nullptr, },
 	{       Param1,   Parameters,      itemParam1,      itemTrParam1,            nullptr,      nullptr, },
 	{  BaudRateInt,   Parameters,   itemBaudRate1,   itemTrBaudRate1,  &baudRateValueInt,      nullptr, },
@@ -75,6 +78,6 @@ const MenuNode menu1[] = {
 	{     NoMenuId,     NoMenuId,         nullptr,           nullptr,            nullptr,      nullptr, },
 };
 
-const MenuNode* mainMenu = menu1;
+MenuNode* mainMenu = menu1;
 
 // ------------------------------------------------------------------------

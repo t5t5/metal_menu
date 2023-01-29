@@ -15,7 +15,7 @@ class MenuModelIndex
 {
 protected:
 	friend class MenuModel;
-	MenuModelIndex(const MenuModel* model, const MenuNode* node, int line);
+	MenuModelIndex(const MenuModel* model, MenuNode* node, int line);
 public:
 	MenuModelIndex();
 	~MenuModelIndex() = default;
@@ -29,11 +29,13 @@ public:
 	const char* name() const;
 	AbstractMenuValue* value() const;
 	AbstractMenuAction* action() const;
+
+	void setValue(AbstractMenuValue* value) const;
+	void setAction(AbstractMenuAction* action) const;
 private:
 	const MenuModel* m_model;
-	const MenuNode* m_node;
+	MenuNode* m_node;
 	int m_line;
-	int m_count;
 };
 
 #endif // MENUMODELINDEX_H

@@ -7,6 +7,7 @@ namespace Ui {
 class MenuDialog;
 }
 
+class AbstractMenuAction;
 class MenuItemDelegate;
 class MenuModel;
 class MenuView;
@@ -35,6 +36,9 @@ private:
 	MenuModel* menuModel;
 	MenuView* menuView;
 	MenuItemDelegate* menuDelegate;
+
+	AbstractMenuAction* messageAction;
+	AbstractMenuAction* exitAction;
 };
 
 #endif // MENUDIALOG_H
