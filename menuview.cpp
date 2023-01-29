@@ -88,7 +88,7 @@ void MenuView::walkMode_forward()
 		m_lineCount = lineCount;
 		m_visibleIndex = 0;
 	} else
-	if (m_currentIndex.value() != nullptr) {
+	if ((m_currentIndex.value() != nullptr) && !m_currentIndex.value()->isReadOnly()) {
 		// если редактируемое значение, входим в режим редактирования
 		m_mode = EditMode;
 	} else

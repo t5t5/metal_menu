@@ -38,6 +38,7 @@ private:
 	MenuItemDelegate* menuDelegate;
 
 	AbstractMenuAction* messageAction;
+	AbstractMenuAction* versionAction;
 	AbstractMenuAction* exitAction;
 };
 

@@ -19,6 +19,8 @@ class AbstractMenuValue
 public:
 	virtual ~AbstractMenuValue() { }
 
+	virtual bool isReadOnly() const { return false; }
+
 	virtual bool next() = 0;
 	virtual bool previous() = 0;
 
@@ -34,18 +36,6 @@ public:
 	virtual ~AbstractMenuAction() { }
 
 	virtual void call() = 0;
-};
-
-class MenuNoValue : public AbstractMenuValue
-{
-public:
-	virtual ~MenuNoValue() override { }
-
-	virtual bool next() override { return false; }
-	virtual bool previous() override { return false; }
-	virtual void apply() override { }
-	virtual void cancel() override { }
-	virtual void toChar(char*, int) const override { }
 };
 
 template <typename T>
@@ -197,8 +187,6 @@ private:
 	bool m_isEditing;
 };
 
-
-
 template <typename T>
 class EnumKeyMenuValue : public AbstractMenuValue
 {
@@ -284,6 +272,30 @@ private:
 	int m_count;
 	int m_index;
 	bool m_isEditing;
+};
+
+class TextMenuValue : public AbstractMenuValue
+{
+public:
+	TextMenuValue(const char* text)
+		: m_text(text)
+		, m_len(strlen(text))
+	{
+	}
+
+	virtual bool isReadOnly() const override { return true; }
+	virtual bool next() override { return false; }
+	virtual bool previous() override { return false; }
+	virtual void apply() override { }
+	virtual void cancel() override { }
+	virtual void toChar(char* out, int size) const override
+	{
+		memcpy_s(out, size, m_text, m_len);
+	}
+private:
+	const char* m_text;
+	const int m_len;
+
 };
 
 template <typename T>

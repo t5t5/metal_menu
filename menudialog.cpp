@@ -184,6 +184,12 @@ MenuDialog::MenuDialog(QWidget* parent /* = nullptr */)
 			QTimer::singleShot(2000, this, [this] () { ui->actionEdit->clear(); });
 		}
 	);
+	versionAction = new FunctionMenuAction(
+		[this] () {
+			ui->actionEdit->setText("About author!");
+			QTimer::singleShot(2000, this, [this] () { ui->actionEdit->clear(); });
+		}
+	);
 	exitAction = new FunctionMenuAction([this] () { close(); });
 }
 
@@ -193,6 +199,7 @@ MenuDialog::~MenuDialog()
 	if (menuModel) { delete menuModel; }
 
 	if (exitAction) { delete exitAction; }
+	if (versionAction) { delete versionAction; }
 	if (messageAction) { delete messageAction; }
 }
 
@@ -207,6 +214,7 @@ void MenuDialog::start()
 	menuView->setMenuItemDelegate(menuDelegate);
 
 	menuModel->setAction(Message, messageAction);
+	menuModel->setAction(Version, versionAction);
 	menuModel->setAction(Exit, exitAction);
 }
 

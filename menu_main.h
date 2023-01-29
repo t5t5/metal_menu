@@ -11,6 +11,7 @@ enum MenuIds
 {
 	Application = RootMenuId + 1,
 	Message,
+	Version,
 	Exit,
 	Parameters,
 	Param1,
