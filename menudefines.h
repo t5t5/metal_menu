@@ -7,6 +7,7 @@
 
 #include <functional>
 #include <limits>
+#include <string.h>
 
 using MenuId = char;
 const MenuId NoMenuId = -1;
