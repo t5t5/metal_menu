@@ -5,6 +5,8 @@
 #pragma once
 #endif
 
+#include "menudefines.h"
+
 class MenuModel;
 struct MenuNode;
 

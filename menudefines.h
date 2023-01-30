@@ -9,9 +9,37 @@
 #include <limits>
 #include <string.h>
 
+#include "flag.h"
+
 using MenuId = char;
 const MenuId NoMenuId = -1;
 const MenuId RootMenuId = 0;
+
+namespace Menu
+{
+
+enum ItemFlag
+{
+	NoItemFlag         = 0x00,
+	ItemValueReadOnly  = 0x01,
+	ItemValueHidden    = 0x02,
+};
+using ItemFlags = Flag<ItemFlag>;
+
+enum PaintFlag
+{
+	NoPaintFlag        = 0x00,
+	PaintSelectedItem  = 0x01,
+	PaintScrollUp      = 0x02,
+	PaintScrollDown    = 0x04,
+	PaintHasSubMenu    = 0x08,
+	PaintHasParentMenu = 0x10,
+	PaintParameterEdit = 0x20,
+	PaintValueOnly     = 0x40,
+};
+using PaintFlags = Flag<PaintFlag>;
+
+} // namespace Menu
 
 extern int language;
 
@@ -345,6 +373,7 @@ struct MenuNode
 {
 	MenuId id;
 	MenuId parentId;
+	Menu::ItemFlags flag;
 	const char* name;
 	const char* translate;
 	AbstractMenuValue* value;

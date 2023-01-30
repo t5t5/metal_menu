@@ -67,22 +67,22 @@ static const char version[] = "0.99a";
 static TextMenuValue versionValue(version);
 
 MenuNode menu1[] = {
-//             id  |   parentId |           name |        translate |              value |      action
-	{  Application,   RootMenuId, itemApplication, itemTrApplication,            nullptr,      nullptr, },
-	{   Parameters,   RootMenuId,  itemParameters,  itemTrParameters,            nullptr,      nullptr, },
-	{    Languages,   RootMenuId,   itemLanguages,   itemTrLanguages,            nullptr,      nullptr, },
-	{      Message,  Application,     itemMessage,     itemTrMessage,            nullptr,      nullptr, },
-	{      Version,  Application,     itemVersion,     itemTrVersion,      &versionValue,      nullptr, },
-	{         Exit,  Application,        itemExit,        itemTrExit,            nullptr,      nullptr, },
-	{       Param1,   Parameters,      itemParam1,      itemTrParam1,            nullptr,      nullptr, },
-	{  BaudRateInt,   Parameters,   itemBaudRate1,   itemTrBaudRate1,  &baudRateValueInt,      nullptr, },
-	{ BaudRateText,   Parameters,   itemBaudRate3,   itemTrBaudRate3, &baudRateValueText,      nullptr, },
-	{ BaudRateEnum,   Parameters,   itemBaudRate2,   itemTrBaudRate2, &baudRateValueEnum,      nullptr, },
-	{       Param3,   Parameters,      itemParam3,      itemTrParam3,       &param3value,      nullptr, },
-	{  ResetParam3,   Parameters, itemResetParam3, itemTrResetParam3,            nullptr, &param3reset, },
-	{      EngLang,    Languages,     itemEngLang,     itemTrEngLang,            nullptr,  &setEnglish, },
-	{      RusLang,    Languages,     itemRusLang,     itemTrRusLang,            nullptr,  &setRussian, },
-	{     NoMenuId,     NoMenuId,         nullptr,           nullptr,            nullptr,      nullptr, },
+//             id |   parentId  |               flag |           name |        translate |             value |      action
+	{  Application,   RootMenuId,    Menu::NoItemFlag, itemApplication, itemTrApplication,            nullptr,      nullptr, },
+	{   Parameters,   RootMenuId,    Menu::NoItemFlag,  itemParameters,  itemTrParameters,            nullptr,      nullptr, },
+	{    Languages,   RootMenuId,    Menu::NoItemFlag,   itemLanguages,   itemTrLanguages,            nullptr,      nullptr, },
+	{      Message,  Application,    Menu::NoItemFlag,     itemMessage,     itemTrMessage,            nullptr,      nullptr, },
+	{      Version,  Application,    Menu::NoItemFlag,     itemVersion,     itemTrVersion,      &versionValue,      nullptr, },
+	{         Exit,  Application,    Menu::NoItemFlag,        itemExit,        itemTrExit,            nullptr,      nullptr, },
+	{       Param1,   Parameters,    Menu::NoItemFlag,      itemParam1,      itemTrParam1,            nullptr,      nullptr, },
+	{  BaudRateInt,   Parameters,    Menu::NoItemFlag,   itemBaudRate1,   itemTrBaudRate1,  &baudRateValueInt,      nullptr, },
+	{ BaudRateText,   Parameters,    Menu::NoItemFlag,   itemBaudRate3,   itemTrBaudRate3, &baudRateValueText,      nullptr, },
+	{ BaudRateEnum,   Parameters,    Menu::NoItemFlag,   itemBaudRate2,   itemTrBaudRate2, &baudRateValueEnum,      nullptr, },
+	{       Param3,   Parameters,    Menu::NoItemFlag,      itemParam3,      itemTrParam3,       &param3value,      nullptr, },
+	{  ResetParam3,   Parameters,    Menu::NoItemFlag, itemResetParam3, itemTrResetParam3,            nullptr, &param3reset, },
+	{      EngLang,    Languages,    Menu::NoItemFlag,     itemEngLang,     itemTrEngLang,            nullptr,  &setEnglish, },
+	{      RusLang,    Languages,    Menu::NoItemFlag,     itemRusLang,     itemTrRusLang,            nullptr,  &setRussian, },
+	{     NoMenuId,     NoMenuId,    Menu::NoItemFlag,         nullptr,           nullptr,            nullptr,      nullptr, },
 };
 
 MenuNode* mainMenu = menu1;

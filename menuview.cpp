@@ -39,34 +39,34 @@ void MenuView::paint()
 void MenuView::walkMode_paint()
 {
 	int flag = m_parentIndex.parent().isValid()
-		? AbstractMenuItemDelegate::HasParentMenuFlag
-		: AbstractMenuItemDelegate::EmptyFlag;
+		? Menu::PaintHasParentMenu
+		: Menu::NoPaintFlag;
 	if (m_mode == EditMode) {
-		flag |= AbstractMenuItemDelegate::ParameterEditFlag;
+		flag |= Menu::PaintParameterEdit;
 	}
 	m_menuItemDelegate->paintHead(m_parentIndex, flag);
 
 	for (int row = 0; row < m_visibleRows; ++row) {
 		int rowIndex = m_visibleIndex + row;
 		MenuModelIndex menuIndex;
-		int flag = AbstractMenuItemDelegate::EmptyFlag;
+		int flag = Menu::NoPaintFlag;
 		if (rowIndex < m_lineCount) {
 			if (m_currentIndex.line() == rowIndex) {
-				flag = AbstractMenuItemDelegate::SelectedItemFlag;
+				flag = Menu::PaintSelectedItem;
 				if (m_mode == EditMode) {
-					flag |= AbstractMenuItemDelegate::ParameterEditFlag;
+					flag |= Menu::PaintParameterEdit;
 				}
 			}
 			menuIndex = m_model->index(rowIndex, m_parentIndex);
 		}
 		if ((row == 0) && (m_visibleIndex != 0)) {
-			flag |= AbstractMenuItemDelegate::ScrollUpFlag;
+			flag |= Menu::PaintScrollUp;
 		}
 		if ((row == (m_visibleRows - 1)) && (rowIndex != (m_lineCount - 1))) {
-			flag |= AbstractMenuItemDelegate::ScrollDownFlag;
+			flag |= Menu::PaintScrollDown;
 		}
 		if (m_model->hasChildren(menuIndex)) {
-			flag |= AbstractMenuItemDelegate::HasSubMenuFlag;
+			flag |= Menu::PaintHasSubMenu;
 		}
 		m_menuItemDelegate->paintRow(row, menuIndex, flag);
 	}
@@ -81,7 +81,7 @@ void MenuView::editMode_paint()
 	for (; row < skipLines; ++row) {
 		m_menuItemDelegate->paintRow(row, MenuModelIndex());
 	}
-	m_menuItemDelegate->paintRow(row++, m_currentIndex, AbstractMenuItemDelegate::ValueOnlyFlag);
+	m_menuItemDelegate->paintRow(row++, m_currentIndex, Menu::PaintValueOnly);
 	for (; row < m_visibleRows; ++row) {
 		m_menuItemDelegate->paintRow(row, MenuModelIndex());
 	}

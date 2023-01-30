@@ -22,6 +22,7 @@ SOURCES += \
 
 HEADERS += \
     abstractmenuitemdelegate.h \
+    flag.h \
     keyevent.h \
     menu_main.h \
     menudefines.h \

@@ -22,8 +22,10 @@ public:
 
 	virtual int rowCount() const override;
 	virtual int charCount() const override;
-	virtual void paintHead(const MenuModelIndex& index, int flag) override;
-	virtual void paintRow(int row, const MenuModelIndex& index, int flag) override;
+	virtual void paintHead(
+		const MenuModelIndex& index, Menu::PaintFlags flag = Menu::NoPaintFlag) override;
+	virtual void paintRow(
+		int row, const MenuModelIndex& index, Menu::PaintFlags flag = Menu::NoPaintFlag) override;
 public:
 	void setOutWidget(QTextEdit* widget);
 private:
@@ -58,12 +60,13 @@ int MenuItemDelegate::charCount() const
 	return CharCount;
 }
 
-void MenuItemDelegate::paintHead(const MenuModelIndex& index, int flag)
+void MenuItemDelegate::paintHead(
+		const MenuModelIndex& index, Menu::PaintFlags flag /* = Menu::NoPaintFlag */)
 {
 	header = (index.isValid())
 			? QString::fromUtf8(index.name())
 			: QString::fromUtf8("application");
-	if (flag == ParameterEditFlag) {
+	if (flag.test(Menu::PaintParameterEdit)) {
 		int spaceSize = (CharCount - header.size() - 1);
 		header.append(QString(spaceSize, ' '));
 		header.append("*");
@@ -71,12 +74,13 @@ void MenuItemDelegate::paintHead(const MenuModelIndex& index, int flag)
 	show();
 }
 
-void MenuItemDelegate::paintRow(int row, const MenuModelIndex& index, int flag)
+void MenuItemDelegate::paintRow(
+		int row, const MenuModelIndex& index, Menu::PaintFlags flag /* = Menu::NoPaintFlag */)
 {
 	if (!index.isValid()) {
 		rows[row].clear();
 	} else
-	if (flag == ValueOnlyFlag) {
+	if (flag.test(Menu::PaintValueOnly)) {
 		char value[ValueCount];
 		value[0] = 0;
 		auto v = index.value();
@@ -90,20 +94,20 @@ void MenuItemDelegate::paintRow(int row, const MenuModelIndex& index, int flag)
 		auto v = index.value();
 		if (v) { v->toChar(value, ValueCount); }
 		auto item = formatItem(text, &value[0], CharCount - 3);
-		if ((flag & SelectedItemFlag) != 0) {
-			item = (((flag & ParameterEditFlag) == 0) ? '>' : '*') + item;
+		if (flag.test(Menu::PaintSelectedItem)) {
+			item = (flag.test(Menu::PaintParameterEdit) ? '*' : '>') + item;
 		} else {
 			item = ' ' + item;
 		}
-		if ((flag & HasSubMenuFlag) != 0) {
+		if (flag.test(Menu::PaintHasSubMenu)) {
 			item = item + '>';;
 		} else {
 			item = item + ' ';
 		}
-		if ((flag & ScrollUpFlag) != 0) {
+		if (flag.test(Menu::PaintScrollUp)) {
 			item = item + '^';
 		} else
-		if ((flag & ScrollDownFlag) != 0) {
+		if (flag.test(Menu::PaintScrollDown)) {
 			item = item + 'v';
 		} else {
 			item = item + ' ';
