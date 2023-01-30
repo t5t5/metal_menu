@@ -19,6 +19,7 @@ public:
 		HasSubMenuFlag    = 0x08,
 		HasParentMenuFlag = 0x10,
 		ParameterEditFlag = 0x20,
+		ValueOnlyFlag     = 0x40,
 	};
 
 	virtual ~AbstractMenuItemDelegate() = default;

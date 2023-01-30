@@ -13,7 +13,7 @@
 class MenuItemDelegate : public AbstractMenuItemDelegate
 {
 private:
-	static const int RowCount = 2;
+	static const int RowCount = 3;
 	static const int CharCount = 30;
 	static const int ValueCount = 10;
 public:
@@ -31,6 +31,7 @@ private:
 	QVector<QString> rows;
 
 	QString formatItem(const char* name, const char* value, int size);
+	QString formatValue(const char* value, int size);
 
 	void show();
 
@@ -74,6 +75,14 @@ void MenuItemDelegate::paintRow(int row, const MenuModelIndex& index, int flag)
 {
 	if (!index.isValid()) {
 		rows[row].clear();
+	} else
+	if (flag == ValueOnlyFlag) {
+		char value[ValueCount];
+		value[0] = 0;
+		auto v = index.value();
+		if (v) { v->toChar(value, ValueCount); }
+		auto item = formatValue(&value[0], CharCount - 1);
+		rows[row] = item;
 	} else {
 		char value[ValueCount];
 		value[0] = 0;
@@ -124,6 +133,18 @@ QString MenuItemDelegate::formatItem(const char* name, const char* value, int si
 	QString result = name;
 	result.append(QString(spaceSize, ' '));
 	result.append(value == nullptr ? "" : value);
+	return result;
+}
+
+QString MenuItemDelegate::formatValue(const char* value, int size)
+{
+	QString v = QString::fromUtf8(value);
+	QString result = QString("%1%2%3")
+		.arg(
+			QString((size - v.size() + 1) / 2, ' '),
+			v,
+			QString((size - v.size()) / 2, ' ')
+			);
 	return result;
 }
 

@@ -28,6 +28,8 @@ private:
 
 	void reset();
 	void paint();
+	void walkMode_paint();
+	void editMode_paint();
 
 	void walkMode_down();
 	void walkMode_up();

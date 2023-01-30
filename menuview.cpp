@@ -28,6 +28,16 @@ void MenuView::paint()
 {
 	if (!m_menuItemDelegate || !m_model) { return; }
 
+	if (m_mode == WalkMode) {
+		walkMode_paint(); }
+	else {
+		editMode_paint();
+	}
+
+}
+
+void MenuView::walkMode_paint()
+{
 	int flag = m_parentIndex.parent().isValid()
 		? AbstractMenuItemDelegate::HasParentMenuFlag
 		: AbstractMenuItemDelegate::EmptyFlag;
@@ -60,6 +70,22 @@ void MenuView::paint()
 		}
 		m_menuItemDelegate->paintRow(row, menuIndex, flag);
 	}
+}
+
+void MenuView::editMode_paint()
+{
+	m_menuItemDelegate->paintHead(m_currentIndex);
+
+	int skipLines = (m_visibleRows) / 2;
+	int row = 0;
+	for (; row < skipLines; ++row) {
+		m_menuItemDelegate->paintRow(row, MenuModelIndex());
+	}
+	m_menuItemDelegate->paintRow(row++, m_currentIndex, AbstractMenuItemDelegate::ValueOnlyFlag);
+	for (; row < m_visibleRows; ++row) {
+		m_menuItemDelegate->paintRow(row, MenuModelIndex());
+	}
+
 }
 
 void MenuView::walkMode_down()
