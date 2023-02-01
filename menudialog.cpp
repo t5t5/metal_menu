@@ -91,8 +91,12 @@ void MenuItemDelegate::paintRow(
 		char value[ValueCount];
 		value[0] = 0;
 		auto text = index.name();
-		auto v = index.value();
-		if (v) { v->toChar(value, ValueCount); }
+		if (flag.test(Menu::PaintValueComplex)) {
+			memcpy_s(value, ValueCount, "...", 4);
+		} else {
+			auto v = index.value();
+			if (v) { v->toChar(value, ValueCount); }
+		}
 		auto item = formatItem(text, &value[0], CharCount - 3);
 		if (flag.test(Menu::PaintSelectedItem)) {
 			item = (flag.test(Menu::PaintParameterEdit) ? '*' : '>') + item;

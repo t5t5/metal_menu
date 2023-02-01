@@ -28,9 +28,9 @@ void MenuView::paint()
 {
 	if (!m_menuItemDelegate || !m_model) { return; }
 
-	if (m_mode == WalkMode) {
-		walkMode_paint(); }
-	else {
+	if ((m_mode == WalkMode) || (m_mode == EditMode)) {
+		walkMode_paint();
+	} else {
 		editMode_paint();
 	}
 
@@ -67,6 +67,9 @@ void MenuView::walkMode_paint()
 		}
 		if (m_model->hasChildren(menuIndex)) {
 			flag |= Menu::PaintHasSubMenu;
+		}
+		if (menuIndex.flags().test(Menu::ItemValueComplex)) {
+			flag |= Menu::PaintValueComplex;
 		}
 		m_menuItemDelegate->paintRow(row, menuIndex, flag);
 	}
@@ -107,6 +110,7 @@ void MenuView::walkMode_up()
 void MenuView::walkMode_forward()
 {
 	int lineCount = m_model->lineCount(m_currentIndex);
+	Menu::ItemFlags flags = m_currentIndex.flags();
 	if (lineCount) {
 		// если есть подменю, идем в него
 		m_parentIndex = m_currentIndex;
@@ -114,9 +118,11 @@ void MenuView::walkMode_forward()
 		m_lineCount = lineCount;
 		m_visibleIndex = 0;
 	} else
-	if ((m_currentIndex.value() != nullptr) && !m_currentIndex.value()->isReadOnly()) {
+	if (!flags.test(Menu::ItemValueReadOnly)) {
 		// если редактируемое значение, входим в режим редактирования
-		m_mode = EditMode;
+		m_mode = flags.test(Menu::ItemValueComplex)
+			? ComplexEditMode
+			: EditMode;
 	} else
 	if (m_currentIndex.action() != nullptr) {
 		// если на пункт назначено действие, выполняем

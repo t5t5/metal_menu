@@ -24,7 +24,7 @@ public:
 
 	void setMenuItemDelegate(AbstractMenuItemDelegate* delegate);
 private:
-	enum Mode { WalkMode, EditMode, };
+	enum Mode { WalkMode, EditMode, ComplexEditMode };
 
 	void reset();
 	void paint();

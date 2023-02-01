@@ -78,7 +78,7 @@ MenuNode menu1[] = {
 	{  BaudRateInt,   Parameters,       Menu::NoItemFlag,   itemBaudRate1,   itemTrBaudRate1,  &baudRateValueInt,      nullptr, },
 	{ BaudRateText,   Parameters,       Menu::NoItemFlag,   itemBaudRate3,   itemTrBaudRate3, &baudRateValueText,      nullptr, },
 	{ BaudRateEnum,   Parameters,       Menu::NoItemFlag,   itemBaudRate2,   itemTrBaudRate2, &baudRateValueEnum,      nullptr, },
-	{       Param3,   Parameters,       Menu::NoItemFlag,      itemParam3,      itemTrParam3,       &param3value,      nullptr, },
+	{       Param3,   Parameters, Menu::ItemValueComplex,      itemParam3,      itemTrParam3,       &param3value,      nullptr, },
 	{  ResetParam3,   Parameters,       Menu::NoItemFlag, itemResetParam3, itemTrResetParam3,            nullptr, &param3reset, },
 	{      EngLang,    Languages,       Menu::NoItemFlag,     itemEngLang,     itemTrEngLang,            nullptr,  &setEnglish, },
 	{      RusLang,    Languages,       Menu::NoItemFlag,     itemRusLang,     itemTrRusLang,            nullptr,  &setRussian, },
