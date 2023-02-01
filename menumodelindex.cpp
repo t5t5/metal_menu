@@ -39,6 +39,21 @@ int MenuModelIndex::line() const
 	return m_line;
 }
 
+Menu::ItemFlags MenuModelIndex::flags() const
+{
+	Menu::ItemFlags flags = Menu::NoItemFlag;
+	if (m_node) {
+		flags = m_node->flags;
+		if (!flags.test(Menu::ItemValueReadOnly)) {
+			AbstractMenuValue* v = m_node->value;
+			if (!v || (v && v->isReadOnly())) {
+				flags |= Menu::ItemValueReadOnly;
+			}
+		}
+	}
+	return flags;
+}
+
 const char* MenuModelIndex::name() const
 {
 	return m_node

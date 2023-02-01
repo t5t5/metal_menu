@@ -22,7 +22,7 @@ enum ItemFlag
 {
 	NoItemFlag         = 0x00,
 	ItemValueReadOnly  = 0x01,
-	ItemValueHidden    = 0x02,
+	ItemValueComplex   = 0x02,
 };
 using ItemFlags = Flag<ItemFlag>;
 
@@ -36,6 +36,7 @@ enum PaintFlag
 	PaintHasParentMenu = 0x10,
 	PaintParameterEdit = 0x20,
 	PaintValueOnly     = 0x40,
+	PaintValueComplex  = 0x80,
 };
 using PaintFlags = Flag<PaintFlag>;
 
@@ -373,7 +374,7 @@ struct MenuNode
 {
 	MenuId id;
 	MenuId parentId;
-	Menu::ItemFlags flag;
+	Menu::ItemFlags flags;
 	const char* name;
 	const char* translate;
 	AbstractMenuValue* value;

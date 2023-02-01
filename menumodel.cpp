@@ -102,6 +102,11 @@ MenuModelIndex MenuModel::parent(const MenuModelIndex& index) const
 	return MenuModelIndex();
 }
 
+Menu::ItemFlags MenuModel::flags(const MenuModelIndex& index) const
+{
+	return index.flags();
+}
+
 const char* MenuModel::name(const MenuModelIndex& index) const
 {
 	return index.name();

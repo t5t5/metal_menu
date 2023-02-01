@@ -28,6 +28,8 @@ public:
 	MenuModelIndex parent() const;
 	int line() const;
 
+	Menu::ItemFlags flags() const;
+
 	const char* name() const;
 	AbstractMenuValue* value() const;
 	AbstractMenuAction* action() const;

@@ -21,6 +21,7 @@ public:
 	bool hasChildren(const MenuModelIndex& parent = MenuModelIndex()) const;
 	int lineCount(const MenuModelIndex& parent = MenuModelIndex()) const;
 
+	Menu::ItemFlags flags(const MenuModelIndex& index) const;
 	const char* name(const MenuModelIndex& index) const;
 	AbstractMenuValue* value(const MenuModelIndex& index) const;
 	AbstractMenuAction* action(const MenuModelIndex& index) const;
