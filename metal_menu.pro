@@ -25,10 +25,15 @@ HEADERS += \
     flag.h \
     keyevent.h \
     menu_main.h \
+    menuaction_function.h \
     menudefines.h \
     menudialog.h \
     menumodel.h \
     menumodelindex.h \
+    menuvalue_enum.h \
+    menuvalue_enumkey.h \
+    menuvalue_number.h \
+    menuvalue_text.h \
     menuview.h
 
 FORMS += \

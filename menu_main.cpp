@@ -1,5 +1,10 @@
 #include "menu_main.h"
 
+#include "menuvalue_enum.h"
+#include "menuvalue_enumkey.h"
+#include "menuvalue_number.h"
+#include "menuvalue_text.h"
+
 const char* itemApplication = "Application";
 const char* itemParameters  = "Parameters";
 const char* itemLanguages   = "Languages";

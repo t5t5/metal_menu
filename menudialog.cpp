@@ -9,6 +9,7 @@
 #include "menuview.h"
 
 #include "menu_main.h"
+#include "menuaction_function.h"
 
 class MenuItemDelegate : public AbstractMenuItemDelegate
 {
