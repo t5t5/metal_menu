@@ -8,10 +8,10 @@
 #include <limits>
 #include <string.h>
 
-#include "menudefines.h"
+#include "menuvalue_abstractsimple.h"
 
 template <typename T>
-class NumberMenuValue : public AbstractMenuValue
+class NumberMenuValue : public AbstractSimpleMenuValue
 {
 public:
 	NumberMenuValue(

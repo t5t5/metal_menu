@@ -7,10 +7,10 @@
 
 #include <string.h>
 
-#include "menudefines.h"
+#include "menuvalue_abstractsimple.h"
 
 template <typename T>
-class EnumMenuValue : public AbstractMenuValue
+class EnumMenuValue : public AbstractSimpleMenuValue
 {
 public:
 	template <int N>

@@ -141,17 +141,31 @@ void MenuView::walkMode_backward()
 	paint();
 }
 
-void MenuView::editMode_increase()
+void MenuView::editMode_up()
 {
 	AbstractMenuValue* value = m_currentIndex.value();
-	if (!value || !value->next()) { return; }
+	if (!value || !value->up()) { return; }
 	paint();
 }
 
-void MenuView::editMode_decrease()
+void MenuView::editMode_down()
 {
 	AbstractMenuValue* value = m_currentIndex.value();
-	if (!value || !value->previous()) { return; }
+	if (!value || !value->down()) { return; }
+	paint();
+}
+
+void MenuView::editMode_left()
+{
+	AbstractMenuValue* value = m_currentIndex.value();
+	if (!value || !value->left()) { return; }
+	paint();
+}
+
+void MenuView::editMode_right()
+{
+	AbstractMenuValue* value = m_currentIndex.value();
+	if (!value || !value->right()) { return; }
 	paint();
 }
 
@@ -200,16 +214,16 @@ void MenuView::keyEvent(KeyEvent* event)
 
 	switch (event->key()) {
 	case Up:
-		(m_mode == WalkMode) ? walkMode_up() : editMode_increase();
+		(m_mode == WalkMode) ? walkMode_up() : editMode_up();
 		break;
 	case Down:
-		(m_mode == WalkMode) ? walkMode_down() : editMode_decrease();
+		(m_mode == WalkMode) ? walkMode_down() : editMode_down();
 		break;
 	case Left:
-		(m_mode == WalkMode) ? walkMode_up() : editMode_decrease();
+		(m_mode == WalkMode) ? walkMode_up() : editMode_left();
 		break;
 	case Right:
-		(m_mode == WalkMode) ? walkMode_down() : editMode_increase();
+		(m_mode == WalkMode) ? walkMode_down() : editMode_right();
 		break;
 	case Forward:
 		(m_mode == WalkMode) ? walkMode_forward() : editMode_apply();

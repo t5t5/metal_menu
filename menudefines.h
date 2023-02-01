@@ -50,8 +50,10 @@ public:
 
 	virtual bool isReadOnly() const { return false; }
 
-	virtual bool next() = 0;
-	virtual bool previous() = 0;
+	virtual bool up() = 0;
+	virtual bool down() = 0;
+	virtual bool left() = 0;
+	virtual bool right() = 0;
 
 	virtual void apply() = 0;
 	virtual void cancel() = 0;

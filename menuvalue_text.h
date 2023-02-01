@@ -7,9 +7,9 @@
 
 #include <string.h>
 
-#include "menudefines.h"
+#include "menuvalue_abstractsimple.h"
 
-class TextMenuValue : public AbstractMenuValue
+class TextMenuValue : public AbstractSimpleMenuValue
 {
 public:
 	TextMenuValue(const char* text)
@@ -20,10 +20,13 @@ public:
 	virtual ~TextMenuValue() override { }
 
 	virtual bool isReadOnly() const override { return true; }
+
 	virtual bool next() override { return false; }
 	virtual bool previous() override { return false; }
+
 	virtual void apply() override { }
 	virtual void cancel() override { }
+
 	virtual void toChar(char* out, int size) const override
 	{
 		memcpy_s(out, size, m_text, m_len);

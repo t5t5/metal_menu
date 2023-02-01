@@ -7,10 +7,10 @@
 
 #include <string.h>
 
-#include "menudefines.h"
+#include "menuvalue_abstractsimple.h"
 
 template <typename T>
-class EnumKeyMenuValue : public AbstractMenuValue
+class EnumKeyMenuValue : public AbstractSimpleMenuValue
 {
 public:
 	struct Item

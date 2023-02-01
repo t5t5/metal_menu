@@ -36,8 +36,10 @@ private:
 	void walkMode_forward();
 	void walkMode_backward();
 
-	void editMode_increase();
-	void editMode_decrease();
+	void editMode_up();
+	void editMode_down();
+	void editMode_left();
+	void editMode_right();
 	void editMode_apply();
 	void editMode_cancel();
 

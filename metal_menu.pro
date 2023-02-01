@@ -30,6 +30,7 @@ HEADERS += \
     menudialog.h \
     menumodel.h \
     menumodelindex.h \
+    menuvalue_abstractsimple.h \
     menuvalue_enum.h \
     menuvalue_enumkey.h \
     menuvalue_number.h \
