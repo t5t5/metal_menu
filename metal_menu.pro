@@ -18,6 +18,7 @@ SOURCES += \
     menudialog.cpp \
     menumodel.cpp \
     menumodelindex.cpp \
+    menuvalue_ip.cpp \
     menuview.cpp
 
 HEADERS += \
@@ -33,6 +34,7 @@ HEADERS += \
     menuvalue_abstractsimple.h \
     menuvalue_enum.h \
     menuvalue_enumkey.h \
+    menuvalue_ip.h \
     menuvalue_number.h \
     menuvalue_text.h \
     menuview.h

@@ -19,6 +19,7 @@ enum MenuIds
 	BaudRateEnum,
 	BaudRateText,
 	Param3,
+	ParamIP,
 	ResetParam3,
 	Languages,
 	RusLang,

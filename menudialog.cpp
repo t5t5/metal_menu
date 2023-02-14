@@ -16,7 +16,7 @@ class MenuItemDelegate : public AbstractMenuItemDelegate
 private:
 	static const int RowCount = 3;
 	static const int CharCount = 30;
-	static const int ValueCount = 10;
+	static const int ValueCount = 18;
 public:
 	MenuItemDelegate();
 	virtual ~MenuItemDelegate() override;

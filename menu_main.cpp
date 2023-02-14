@@ -2,6 +2,7 @@
 
 #include "menuvalue_enum.h"
 #include "menuvalue_enumkey.h"
+#include "menuvalue_ip.h"
 #include "menuvalue_number.h"
 #include "menuvalue_text.h"
 
@@ -16,6 +17,7 @@ const char* itemBaudRate1   = "BaudRateInt";
 const char* itemBaudRate2   = "BaudRateEnum";
 const char* itemBaudRate3   = "BaudRateText";
 const char* itemParam3      = "Parameter3";
+const char* itemParamIP     = "IP";
 const char* itemResetParam3 = "Reset Parameter3";
 const char* itemRusLang     = "Russin";
 const char* itemEngLang     = "English";
@@ -31,6 +33,7 @@ const char* itemTrBaudRate1   = "Скорость-Int";
 const char* itemTrBaudRate2   = "Скорость-Enum";
 const char* itemTrBaudRate3   = "Скорость-Text";
 const char* itemTrParam3      = "Parameter3";
+const char* itemTrParamIP     = "IP";
 const char* itemTrResetParam3 = "Сброс Parameter3";
 const char* itemTrRusLang     = "Русский";
 const char* itemTrEngLang     = "Английский";
@@ -71,6 +74,9 @@ static const char version[] = "0.99a";
 
 static TextMenuValue versionValue(version);
 
+static unsigned char ip[4] = { 192, 168, 1, 254 };
+static IpMenuValue paramIpValue(ip);
+
 MenuNode menu1[] = {
 //             id |   parentId  |                 flags |           name |        translate |             value |      action
 	{  Application,   RootMenuId,       Menu::NoItemFlag, itemApplication, itemTrApplication,            nullptr,      nullptr, },
@@ -79,6 +85,7 @@ MenuNode menu1[] = {
 	{      Message,  Application,       Menu::NoItemFlag,     itemMessage,     itemTrMessage,            nullptr,      nullptr, },
 	{      Version,  Application,       Menu::NoItemFlag,     itemVersion,     itemTrVersion,      &versionValue,      nullptr, },
 	{         Exit,  Application,       Menu::NoItemFlag,        itemExit,        itemTrExit,            nullptr,      nullptr, },
+	{      ParamIP,   Parameters, Menu::ItemValueComplex,     itemParamIP,     itemTrParamIP,      &paramIpValue,      nullptr, },
 	{       Param1,   Parameters,       Menu::NoItemFlag,      itemParam1,      itemTrParam1,            nullptr,      nullptr, },
 	{  BaudRateInt,   Parameters,       Menu::NoItemFlag,   itemBaudRate1,   itemTrBaudRate1,  &baudRateValueInt,      nullptr, },
 	{ BaudRateText,   Parameters,       Menu::NoItemFlag,   itemBaudRate3,   itemTrBaudRate3, &baudRateValueText,      nullptr, },
