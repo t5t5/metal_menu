@@ -19,6 +19,7 @@ enum MenuIds
 	BaudRateEnum,
 	BaudRateText,
 	Param3,
+	FloatParam4,
 	ParamIP,
 	ParamIP2,
 	ResetParam3,

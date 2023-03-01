@@ -35,6 +35,7 @@ HEADERS += \
     menuvalue_abstractsimple.h \
     menuvalue_enum.h \
     menuvalue_enumkey.h \
+    menuvalue_float.h \
     menuvalue_ip.h \
     menuvalue_ip2.h \
     menuvalue_number.h \

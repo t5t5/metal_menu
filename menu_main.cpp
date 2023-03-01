@@ -2,6 +2,7 @@
 
 #include "menuvalue_enum.h"
 #include "menuvalue_enumkey.h"
+#include "menuvalue_float.h"
 #include "menuvalue_ip.h"
 #include "menuvalue_ip2.h"
 #include "menuvalue_number.h"
@@ -18,6 +19,7 @@ const char* itemBaudRate1   = "BaudRateInt";
 const char* itemBaudRate2   = "BaudRateEnum";
 const char* itemBaudRate3   = "BaudRateText";
 const char* itemParam3      = "Parameter3";
+const char* itemParam4      = "Float4";
 const char* itemParamIP     = "IP";
 const char* itemParamIP2    = "IP2";
 const char* itemResetParam3 = "Reset Parameter3";
@@ -35,6 +37,7 @@ const char* itemTrBaudRate1   = "Скорость-Int";
 const char* itemTrBaudRate2   = "Скорость-Enum";
 const char* itemTrBaudRate3   = "Скорость-Text";
 const char* itemTrParam3      = "Parameter3";
+const char* itemTrParam4      = "Float4";
 const char* itemTrParamIP     = "IP";
 const char* itemTrParamIP2    = "IP2";
 const char* itemTrResetParam3 = "Сброс Parameter3";
@@ -83,6 +86,9 @@ static IpMenuValue paramIpValue(ip);
 static unsigned char ip2[4] = { 192, 168, 1, 254 };
 static Ip2MenuValue paramIp2Value(ip2);
 
+static float param4 = 15.59;
+static FloatMenuValue param4value(&param4);
+
 MenuNode menu1[] = {
 //             id |   parentId  |                 flags |           name |        translate |             value |      action
 	{  Application,   RootMenuId,       Menu::NoItemFlag, itemApplication, itemTrApplication,            nullptr,      nullptr, },
@@ -99,6 +105,7 @@ MenuNode menu1[] = {
 	{ BaudRateEnum,   Parameters,       Menu::NoItemFlag,   itemBaudRate2,   itemTrBaudRate2, &baudRateValueEnum,      nullptr, },
 	{       Param3,   Parameters, Menu::ItemValueComplex,      itemParam3,      itemTrParam3,       &param3value,      nullptr, },
 	{  ResetParam3,   Parameters,       Menu::NoItemFlag, itemResetParam3, itemTrResetParam3,            nullptr, &param3reset, },
+	{  FloatParam4,   Parameters,       Menu::NoItemFlag,      itemParam4,      itemTrParam4,       &param4value,      nullptr, },
 	{      EngLang,    Languages,       Menu::NoItemFlag,     itemEngLang,     itemTrEngLang,            nullptr,  &setEnglish, },
 	{      RusLang,    Languages,       Menu::NoItemFlag,     itemRusLang,     itemTrRusLang,            nullptr,  &setRussian, },
 	{     NoMenuId,     NoMenuId,       Menu::NoItemFlag,         nullptr,           nullptr,            nullptr,      nullptr, },
