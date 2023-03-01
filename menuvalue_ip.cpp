@@ -2,13 +2,12 @@
 
 static const int ElementCount = 4;
 
-IpMenuValue::IpMenuValue(unsigned char* ip)
-	: m_ipPtr(ip)
+IpMenuValue::IpMenuValue(IpAddressParameter* valuePtr)
+	: m_ipPtr(valuePtr)
 	, m_index(0)
 	, m_isEditing(false)
 	, m_isChanged(false)
 {
-
 }
 
 bool IpMenuValue::up()
@@ -63,13 +62,15 @@ bool IpMenuValue::right()
 	return false;
 }
 
-void IpMenuValue::apply()
+bool IpMenuValue::apply()
 {
-	if (m_isChanged) {
-		memcpy_s(m_ipPtr, ElementCount, m_ip, sizeof(m_ip));
+	bool changed = m_isChanged;
+	if (changed) {
+		m_ipPtr->fromBytes(reinterpret_cast<char*>(m_ip), ElementCount);
 	}
 	m_isEditing = false;
 	m_isChanged = false;
+	return changed;
 }
 
 void IpMenuValue::cancel()
@@ -99,7 +100,7 @@ int numToString(int num, char* out, int size)
 void IpMenuValue::toChar(char* out, int size) const
 {
 	// >192<.168.100.123 : 4*3 (digits) + 3 (dots) + 2 (braces) + 1 (zero) = 18 chars max
-	const unsigned char* ip = m_isEditing ? m_ip : m_ipPtr;
+	const unsigned char* ip = m_isEditing ? m_ip : m_ipPtr->data();
 	int position = 0;
 	for (int i = 0; i < ElementCount; ++i) {
 		if (i == m_index) {
@@ -122,8 +123,13 @@ void IpMenuValue::toChar(char* out, int size) const
 	}
 }
 
+Parameter* IpMenuValue::parameter() const
+{
+	return m_ipPtr;
+}
+
 void IpMenuValue::copyValue()
 {
-	memcpy_s(m_ip, sizeof(m_ip), m_ipPtr, ElementCount);
+	m_ipPtr->toBytes(reinterpret_cast<char*>(m_ip), ElementCount);
 	m_isChanged = false;
 }

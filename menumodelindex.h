@@ -36,6 +36,9 @@ public:
 
 	void setValue(AbstractMenuValue* value) const;
 	void setAction(AbstractMenuAction* action) const;
+
+	bool operator==(const MenuModelIndex& other) const;
+	bool operator!=(const MenuModelIndex& other) const;
 private:
 	const MenuModel* m_model;
 	MenuNode* m_node;

@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "menuvalue_abstractsimple.h"
+#include "parameters.h"
 
 template <typename T>
 class EnumKeyMenuValue : public AbstractSimpleMenuValue
@@ -21,12 +22,12 @@ public:
 	};
 
 	template <int N>
-	EnumKeyMenuValue(T* valuePtr, const Item(& items)[N])
+	EnumKeyMenuValue(NumberParameter<T>* valuePtr, const Item(& items)[N])
 		: m_valuePtr(valuePtr)
 		, m_value(T())
 		, m_items(items)
 		, m_count(N)
-		, m_index(findIndex(*valuePtr))
+		, m_index(findIndex(valuePtr->value()))
 		, m_isEditing(false)
 	{
 	}
@@ -35,7 +36,7 @@ public:
 
 	virtual bool next() override
 	{
-		if (!m_isEditing) { m_index = findIndex(*m_valuePtr); }
+		if (!m_isEditing) { m_index = findIndex(m_valuePtr->value()); }
 		int index = m_index + 1;
 		if (index < m_count) {
 			m_isEditing = true;
@@ -48,7 +49,7 @@ public:
 
 	virtual bool previous() override
 	{
-		if (!m_isEditing) { m_index = findIndex(*m_valuePtr); }
+		if (!m_isEditing) { m_index = findIndex(m_valuePtr->value()); }
 		int index = m_index - 1;
 		if (index >= 0) {
 			m_isEditing = true;
@@ -59,13 +60,12 @@ public:
 		}
 	}
 
-	virtual void apply() override
+	virtual bool apply() override
 	{
 		auto value = m_items[m_index].value;
-		if (value != *m_valuePtr) {
-			*m_valuePtr = value;
-		}
+		bool changed = m_valuePtr->setValue(value);
 		m_isEditing = false;
+		return changed;
 	}
 
 	virtual void cancel() override
@@ -75,9 +75,14 @@ public:
 
 	virtual void toChar(char* out, int size) const override
 	{
-		int index = m_isEditing ? m_index : findIndex(*m_valuePtr);
-		const char* src = (language == 0) ? m_items[index].text : m_items[index].translate;
+		int index = m_isEditing ? m_index : findIndex(m_valuePtr->value());
+		const char* src = (language->value() == 0) ? m_items[index].text : m_items[index].translate;
 		memcpy_s(out, size, src, strlen(src) + 1);
+	}
+
+	virtual Parameter* parameter() const override
+	{
+		return m_valuePtr;
 	}
 private:
 	int findIndex(T value) const
@@ -88,7 +93,7 @@ private:
 		return 0;
 	}
 
-	T* m_valuePtr;
+	NumberParameter<T>* m_valuePtr;
 	T m_value;
 	const Item* m_items;
 	int m_count;

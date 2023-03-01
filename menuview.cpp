@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include "abstractmenuitemdelegate.h"
-#include "keyevent.h"
+#include "event.h"
 #include "menumodel.h"
 
 MenuView::MenuView()
@@ -11,6 +11,13 @@ MenuView::MenuView()
 	, m_menuItemDelegate(nullptr)
 {
 	reset();
+	subscribe(Event::EventModelItemChanged);
+	subscribe(Event::EventKey);
+}
+
+MenuView::~MenuView()
+{
+	unsubscribe();
 }
 
 void MenuView::reset()
@@ -174,9 +181,14 @@ void MenuView::editMode_apply()
 	AbstractMenuValue* value = m_currentIndex.value();
 	if (!value) { return; }
 
-	value->apply();
 	m_mode = WalkMode;
-	paint();
+	bool valueChanged = value->apply();
+	if (valueChanged) {
+		ParameterChangedEvent e(value->parameter());
+		sendEvent(&e);
+	} else {
+		paint();
+	}
 }
 
 void MenuView::editMode_cancel()
@@ -192,20 +204,39 @@ void MenuView::editMode_cancel()
 void MenuView::setModel(MenuModel* model)
 {
 	if (m_model == model) { return; }
-
-	if (m_model) {
-		// TODO: отвязка от менюшных event'ов (если есть)
-	}
 	m_model = model;
-	if (m_model) {
-		// TODO: привязка к менюшным event'ам (если есть)
-	}
 	reset();
 }
 
 MenuModel* MenuView::model() const
 {
 	return m_model;
+}
+
+void MenuView::setMenuItemDelegate(AbstractMenuItemDelegate* delegate)
+{
+	if (m_menuItemDelegate == delegate) { return; }
+
+	m_menuItemDelegate = delegate;
+	reset();
+}
+
+void MenuView::event(Event* event)
+{
+	switch (event->eventType()) {
+	case Event::EventKey: {
+		KeyEvent* ke = static_cast<KeyEvent*>(event);
+		keyEvent(ke);
+		break;
+	}
+	case Event::EventModelItemChanged: {
+		MenuItemChangedEvent* ic = static_cast<MenuItemChangedEvent*>(event);
+		menuItemChangedEvent(ic);
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 void MenuView::keyEvent(KeyEvent* event)
@@ -234,10 +265,14 @@ void MenuView::keyEvent(KeyEvent* event)
 	}
 }
 
-void MenuView::setMenuItemDelegate(AbstractMenuItemDelegate* delegate)
+void MenuView::menuItemChangedEvent(MenuItemChangedEvent* e)
 {
-	if (m_menuItemDelegate == delegate) { return; }
-
-	m_menuItemDelegate = delegate;
-	reset();
+	if (e->index().model() != m_model) { return; }
+	if (e->index().parent() != m_parentIndex) { return; }
+	int line = e->index().line();
+	if ((m_visibleIndex <= line) &&
+		(line < (m_visibleIndex + m_visibleRows)))
+	{
+		paint();
+	}
 }

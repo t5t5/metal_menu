@@ -3,13 +3,12 @@
 static const int IpElementCount = 4;
 static const int IpCharCount = IpElementCount * 3;
 
-Ip2MenuValue::Ip2MenuValue(unsigned char* ip)
-	: m_ipPtr(ip)
+Ip2MenuValue::Ip2MenuValue(IpAddressParameter* valuePtr)
+	: m_ipPtr(valuePtr)
 	, m_index(0)
 	, m_isEditing(false)
 	, m_isChanged(false)
 {
-
 }
 
 bool Ip2MenuValue::up()
@@ -61,13 +60,15 @@ bool Ip2MenuValue::right()
 	return false;
 }
 
-void Ip2MenuValue::apply()
+bool Ip2MenuValue::apply()
 {
-	if (m_isChanged) {
-		memcpy_s(m_ipPtr, IpElementCount, m_ip, sizeof(m_ip));
+	bool changed = m_isChanged;
+	if (changed) {
+		m_ipPtr->fromBytes(reinterpret_cast<char*>(m_ip), IpElementCount);
 	}
 	m_isEditing = false;
 	m_isChanged = false;
+	return changed;
 }
 
 void Ip2MenuValue::cancel()
@@ -79,7 +80,7 @@ void Ip2MenuValue::cancel()
 void Ip2MenuValue::toChar(char* out, int size) const
 {
 	// >192<.168.100.123 : 4*3 (digits) + 3 (dots) + 2 (braces) + 1 (zero) = 18 chars max
-	const unsigned char* ip = m_isEditing ? m_ip : m_ipPtr;
+	const unsigned char* ip = m_isEditing ? m_ip : m_ipPtr->data();
 	bool isDigit = false;
 	int position = 0;
 	for (int i = 0; i < IpCharCount; ++i) {
@@ -105,11 +106,17 @@ void Ip2MenuValue::toChar(char* out, int size) const
 			isDigit = false;
 		}
 	}
+	if (position < size) { out[position] = 0; }
+}
+
+Parameter* Ip2MenuValue::parameter() const
+{
+	return m_ipPtr;
 }
 
 void Ip2MenuValue::copyValue()
 {
-	memcpy_s(m_ip, sizeof(m_ip), m_ipPtr, IpElementCount);
+	m_ipPtr->toBytes(reinterpret_cast<char*>(m_ip), IpElementCount);
 	m_isChanged = false;
 }
 

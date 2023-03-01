@@ -9,21 +9,26 @@ class AbstractMenuItemDelegate;
 class KeyEvent;
 class MenuModel;
 
+#include "eventhandler.h"
 #include "menumodelindex.h"
 
-class MenuView
+class MenuView : public EventHandler
 {
 public:
 	MenuView();
-	~MenuView() = default;
+	~MenuView();
 
 	void setModel(MenuModel* model);
 	MenuModel* model() const;
 
-	void keyEvent(KeyEvent* event);
-
 	void setMenuItemDelegate(AbstractMenuItemDelegate* delegate);
+
+	// EventHandler interface
+	virtual void event(Event* event) override;
 private:
+	void keyEvent(KeyEvent* event);
+	void menuItemChangedEvent(MenuItemChangedEvent* event);
+
 	enum Mode { WalkMode, EditMode, ComplexEditMode };
 
 	void reset();
@@ -54,7 +59,6 @@ private:
 	int m_visibleRows;
 
 //	int m_currentIndex;
-
 };
 
 #endif // MENUVIEW_H

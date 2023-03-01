@@ -9,13 +9,14 @@
 #include <string.h>
 
 #include "menuvalue_abstractsimple.h"
+#include "parameter_number.h"
 
 template <typename T>
 class NumberMenuValue : public AbstractSimpleMenuValue
 {
 public:
 	NumberMenuValue(
-			T* valuePtr,
+			NumberParameter<T>* valuePtr,
 			T step = 1,
 			T min = std::numeric_limits<T>::min(),
 			T max = std::numeric_limits<T>::max())
@@ -30,7 +31,7 @@ public:
 
 	virtual bool next() override
 	{
-		if (!m_isEditing) { m_value = *m_valuePtr; }
+		if (!m_isEditing) { m_value = m_valuePtr->value(); }
 		auto v = m_value + m_step;
 		if (v <= m_max) {
 			m_isEditing = true;
@@ -42,7 +43,7 @@ public:
 	}
 	virtual bool previous() override
 	{
-		if (!m_isEditing) { m_value = *m_valuePtr; }
+		if (!m_isEditing) { m_value = m_valuePtr->value(); }
 		auto v = m_value - m_step;
 		if (v >= m_min) {
 			m_isEditing = true;
@@ -52,12 +53,11 @@ public:
 			return false;
 		}
 	}
-	virtual void apply() override
+	virtual bool apply() override
 	{
-		if (m_value != *m_valuePtr) {
-			*m_valuePtr = m_value;
-		}
+		bool changed = m_valuePtr->setValue(m_value);
 		m_isEditing = false;
+		return changed;
 	}
 	virtual void cancel() override
 	{
@@ -66,11 +66,13 @@ public:
 
 	virtual void toChar(char* out, int size) const override
 	{
-		T v = m_isEditing ? m_value : *m_valuePtr;
+		T v = m_isEditing ? m_value : m_valuePtr->value();
 		snprintf(out, size, "%d", v);
 	}
+
+	virtual Parameter* parameter() const override { return m_valuePtr; }
 private:
-	T* m_valuePtr;
+	NumberParameter<T>* m_valuePtr;
 	T m_value;
 	T m_step;
 	T m_min;

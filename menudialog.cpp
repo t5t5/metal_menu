@@ -1,20 +1,23 @@
 #include "menudialog.h"
 #include "ui_menudialog.h"
 
+#include <QRandomGenerator>
 #include <QTimer>
 
 #include "abstractmenuitemdelegate.h"
-#include "keyevent.h"
+#include "eventbus.h"
 #include "menumodel.h"
 #include "menuview.h"
 
 #include "menu_main.h"
 #include "menuaction_function.h"
 
+#include "parameters.h"
+
 class MenuItemDelegate : public AbstractMenuItemDelegate
 {
 private:
-	static const int RowCount = 3;
+	static const int RowCount = 4;
 	static const int CharCount = 30;
 	static const int ValueCount = 18;
 public:
@@ -221,6 +224,13 @@ MenuDialog::MenuDialog(QWidget* parent /* = nullptr */)
 		}
 	);
 	exitAction = new FunctionMenuAction([this] () { close(); });
+
+	randomUpdateTimer.setInterval(500);
+	randomUpdateTimer.setSingleShot(false);
+	connect(
+		&randomUpdateTimer, &QTimer::timeout,
+		this, &MenuDialog::randomParameter);
+	randomUpdateTimer.start();
 }
 
 MenuDialog::~MenuDialog()
@@ -238,7 +248,7 @@ void MenuDialog::start()
 	menuDelegate = new MenuItemDelegate();
 	menuDelegate->setOutWidget(ui->menuText);
 
-	menuModel = new MenuModel(mainMenu, Parameters);
+	menuModel = new MenuModel(mainMenu);
 	menuView = new MenuView();
 	menuView->setModel(menuModel);
 	menuView->setMenuItemDelegate(menuDelegate);
@@ -252,40 +262,61 @@ void MenuDialog::processUp()
 {
 	if (!menuView) { return; }
 	KeyEvent e(Key::Up);
-	menuView->keyEvent(&e);
+	eventBus().sendEvent(&e);
 }
 
 void MenuDialog::processDown()
 {
 	if (!menuView) { return; }
 	KeyEvent e(Key::Down);
-	menuView->keyEvent(&e);
+	eventBus().sendEvent(&e);
 }
 
 void MenuDialog::processLeft()
 {
 	if (!menuView) { return; }
 	KeyEvent e(Key::Left);
-	menuView->keyEvent(&e);
+	eventBus().sendEvent(&e);
 }
 
 void MenuDialog::processRight()
 {
 	if (!menuView) { return; }
 	KeyEvent e(Key::Right);
-	menuView->keyEvent(&e);
+	eventBus().sendEvent(&e);
 }
 
 void MenuDialog::processForward()
 {
 	if (!menuView) { return; }
 	KeyEvent e(Key::Forward);
-	menuView->keyEvent(&e);
+	eventBus().sendEvent(&e);
 }
 
 void MenuDialog::processBackward()
 {
 	if (!menuView) { return; }
 	KeyEvent e(Key::Backward);
-	menuView->keyEvent(&e);
+	eventBus().sendEvent(&e);
+}
+
+void MenuDialog::randomParameter()
+{
+	static QRandomGenerator gen = QRandomGenerator::securelySeeded();
+	{
+		auto val = gen.generate();
+		bool changed = randomIntConst->setValue(val & 255);
+		if (changed) {
+			ParameterChangedEvent e(randomIntConst);
+			eventBus().sendEvent(&e);
+		}
+	}
+	{
+		auto val = gen.generateDouble();
+		bool changed = randomFloatConst->setValue(val * 15);
+		if (changed) {
+			ParameterChangedEvent e(randomFloatConst);
+			eventBus().sendEvent(&e);
+		}
+	}
 }

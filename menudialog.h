@@ -2,6 +2,7 @@
 #define MENUDIALOG_H
 
 #include <QDialog>
+#include <QTimer>
 
 namespace Ui {
 class MenuDialog;
@@ -30,7 +31,11 @@ private slots:
 	void processRight();
 	void processForward();
 	void processBackward();
+
+	void randomParameter();
 private:
+	QTimer randomUpdateTimer;
+
 	Ui::MenuDialog *ui;
 
 	MenuModel* menuModel;

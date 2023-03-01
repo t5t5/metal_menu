@@ -5,14 +5,15 @@
 #pragma once
 #endif
 
+#include "eventhandler.h"
 #include "menudefines.h"
-
 #include "menumodelindex.h"
 
-class MenuModel
+class MenuModel : public EventHandler
 {
 public:
 	MenuModel(MenuNode* n, MenuId startId = RootMenuId);
+	virtual ~MenuModel() override;
 
 	MenuModelIndex index(int line, const MenuModelIndex& parent = MenuModelIndex()) const;
 	MenuModelIndex idx(MenuId menuId) const;
@@ -32,6 +33,9 @@ public:
 	void setValue(MenuId menuId, AbstractMenuValue* value) const;
 	void setAction(const MenuModelIndex& index, AbstractMenuAction* action) const;
 	void setAction(MenuId menuId, AbstractMenuAction* action) const;
+
+	// EventHandler interface
+	virtual void event(Event* event) override;
 private:
 	MenuNode* node;
 	MenuId startId;

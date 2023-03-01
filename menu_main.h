@@ -14,18 +14,18 @@ enum MenuIds
 	Version,
 	Exit,
 	Parameters,
-	Param1,
+	Network,
 	BaudRateInt,
 	BaudRateEnum,
 	BaudRateText,
-	Param3,
-	FloatParam4,
 	ParamIP,
 	ParamIP2,
-	ResetParam3,
 	Languages,
+	RandomInt,
+	RandomFloat,
 	RusLang,
 	EngLang,
+	RusEngLang,
 };
 
 extern MenuNode* mainMenu;

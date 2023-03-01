@@ -11,8 +11,8 @@ UI_DIR = ./tmp/ui
 DESTDIR = $$BUILD_DIR
 
 SOURCES += \
-    abstractmenuitemdelegate.cpp \
-    keyevent.cpp \
+    eventbus.cpp \
+    eventhandler.cpp \
     main.cpp \
     menu_main.cpp \
     menudialog.cpp \
@@ -20,14 +20,19 @@ SOURCES += \
     menumodelindex.cpp \
     menuvalue_ip.cpp \
     menuvalue_ip2.cpp \
-    menuview.cpp
+    menuview.cpp \
+    parameter_ipaddress.cpp \
+    parameters.cpp
 
 HEADERS += \
     abstractmenuitemdelegate.h \
+    event.h \
+    eventbus.h \
+    eventhandler.h \
     flag.h \
-    keyevent.h \
     menu_main.h \
     menuaction_function.h \
+    menuaction_setvalue_number.h \
     menudefines.h \
     menudialog.h \
     menumodel.h \
@@ -35,12 +40,16 @@ HEADERS += \
     menuvalue_abstractsimple.h \
     menuvalue_enum.h \
     menuvalue_enumkey.h \
-    menuvalue_float.h \
+    menuvalue_floatconst.h \
     menuvalue_ip.h \
     menuvalue_ip2.h \
     menuvalue_number.h \
-    menuvalue_text.h \
-    menuview.h
+    menuvalue_textconst.h \
+    menuview.h \
+    parameter.h \
+    parameter_ipaddress.h \
+    parameter_number.h \
+    parameters.h
 
 FORMS += \
     menudialog.ui

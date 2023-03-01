@@ -1,114 +1,81 @@
 #include "menu_main.h"
 
+#include "parameters.h"
+
+
+#include "menuaction_setvalue_number.h"
 #include "menuvalue_enum.h"
 #include "menuvalue_enumkey.h"
-#include "menuvalue_float.h"
 #include "menuvalue_ip.h"
 #include "menuvalue_ip2.h"
+#include "menuvalue_floatconst.h"
 #include "menuvalue_number.h"
-#include "menuvalue_text.h"
+#include "menuvalue_textconst.h"
 
-const char* itemApplication = "Application";
-const char* itemParameters  = "Parameters";
-const char* itemLanguages   = "Languages";
-const char* itemMessage     = "Message";
-const char* itemVersion     = "Version";
-const char* itemExit        = "Exit";
-const char* itemParam1      = "Parameter1";
-const char* itemBaudRate1   = "BaudRateInt";
-const char* itemBaudRate2   = "BaudRateEnum";
-const char* itemBaudRate3   = "BaudRateText";
-const char* itemParam3      = "Parameter3";
-const char* itemParam4      = "Float4";
-const char* itemParamIP     = "IP";
-const char* itemParamIP2    = "IP2";
-const char* itemResetParam3 = "Reset Parameter3";
-const char* itemRusLang     = "Russin";
-const char* itemEngLang     = "English";
-
-const char* itemTrApplication = "Приложение";
-const char* itemTrParameters  = "Параметры";
-const char* itemTrLanguages   = "Языки";
-const char* itemTrMessage     = "Сообщение";
-const char* itemTrVersion     = "Версия";
-const char* itemTrExit        = "Выход";
-const char* itemTrParam1      = "Parameter1";
-const char* itemTrBaudRate1   = "Скорость-Int";
-const char* itemTrBaudRate2   = "Скорость-Enum";
-const char* itemTrBaudRate3   = "Скорость-Text";
-const char* itemTrParam3      = "Parameter3";
-const char* itemTrParam4      = "Float4";
-const char* itemTrParamIP     = "IP";
-const char* itemTrParamIP2    = "IP2";
-const char* itemTrResetParam3 = "Сброс Parameter3";
-const char* itemTrRusLang     = "Русский";
-const char* itemTrEngLang     = "Английский";
-
-enum BaudRate
+// ------------------------------------------------------------------------
+// languages
+static EnumKeyMenuValue<int>::Item LanguagesTextValues[] =
 {
-	Rate9600 = 9600,
-	Rate57600 = 57600,
-	Rate115200 = 115200,
+	{ 0,  "English", "Анг." },
+	{ 1,  "Russian", "Рус." },
 };
+static EnumKeyMenuValue<int> languageEnumKeyValueItem(language, LanguagesTextValues);
 
-static int baudRateInt = 9600;
-static BaudRate baudRateEnum = Rate9600;
-static int param3 = 100;
+static SetValueNumberMenuAction<int> setEnglishAction(language, 0);
+static SetValueNumberMenuAction<int> setRussianAction(language, 1);
 
-int language = 0;
+// ------------------------------------------------------------------------
+// main screen changable read only parameters
+static NumberMenuValue<int> randomIntValueItem(randomIntConst);
+static ConstFloatMenuValue randomFloatValueItem(randomFloatConst);
 
+// ------------------------------------------------------------------------
+// number baud rate read only parameter
+static NumberMenuValue<int> baudRateIntValueItem(baudRate);
+
+// number enum baud rate parameters
 static int BaudRateIntValues[] = { 9600, 57600, 115200, };
-static EnumMenuValue<int> baudRateValueInt(&baudRateInt, BaudRateIntValues);
+static EnumMenuValue<int> baudRateEnumValueItem(baudRate, BaudRateIntValues);
 
-static BaudRate BaudRateEnumValues[] = { Rate9600, Rate57600, Rate115200, };
-static EnumMenuValue<BaudRate> baudRateValueEnum(&baudRateEnum, BaudRateEnumValues);
-
+// number enum with text baud rate parameters
 static EnumKeyMenuValue<int>::Item BaudRateTextValues[] = {
 	{ 9600,   "Slow",   "Медл."},
 	{ 57600,  "Normal", "Норм."},
 	{ 115200, "Fast",   "Быст."},
 };
-static EnumKeyMenuValue<int> baudRateValueText(&baudRateInt, BaudRateTextValues);
+static EnumKeyMenuValue<int> baudRateEnumKeyValueItem(baudRate, BaudRateTextValues);
 
-static NumberMenuValue<int> param3value(&param3);
-static SetValueMenuAction<int> param3reset(&param3, 100);
+// ------------------------------------------------------------------------
+// read only text values
+static ConstTextMenuValue versionValueItem("0.99a");
 
-static SetValueMenuAction<int> setEnglish(&language, 0);
-static SetValueMenuAction<int> setRussian(&language, 1);
+// ------------------------------------------------------------------------
+// ip addresses editors
+static IpMenuValue ip1ValueItem(ipAddress);
+static Ip2MenuValue ip2ValueItem(ipAddress);
 
-static const char version[] = "0.99a";
-
-static TextMenuValue versionValue(version);
-
-static unsigned char ip[4] = { 192, 168, 1, 254 };
-static IpMenuValue paramIpValue(ip);
-
-static unsigned char ip2[4] = { 192, 168, 1, 254 };
-static Ip2MenuValue paramIp2Value(ip2);
-
-static float param4 = 15.59;
-static FloatMenuValue param4value(&param4);
-
+// ------------------------------------------------------------------------
+// main menu struct
 MenuNode menu1[] = {
-//             id |   parentId  |                 flags |           name |        translate |             value |      action
-	{  Application,   RootMenuId,       Menu::NoItemFlag, itemApplication, itemTrApplication,            nullptr,      nullptr, },
-	{   Parameters,   RootMenuId,       Menu::NoItemFlag,  itemParameters,  itemTrParameters,            nullptr,      nullptr, },
-	{    Languages,   RootMenuId,       Menu::NoItemFlag,   itemLanguages,   itemTrLanguages,            nullptr,      nullptr, },
-	{      Message,  Application,       Menu::NoItemFlag,     itemMessage,     itemTrMessage,            nullptr,      nullptr, },
-	{      Version,  Application,       Menu::NoItemFlag,     itemVersion,     itemTrVersion,      &versionValue,      nullptr, },
-	{         Exit,  Application,       Menu::NoItemFlag,        itemExit,        itemTrExit,            nullptr,      nullptr, },
-	{      ParamIP,   Parameters, Menu::ItemValueComplex,     itemParamIP,     itemTrParamIP,      &paramIpValue,      nullptr, },
-	{     ParamIP2,   Parameters, Menu::ItemValueComplex,    itemParamIP2,    itemTrParamIP2,     &paramIp2Value,      nullptr, },
-	{       Param1,   Parameters,       Menu::NoItemFlag,      itemParam1,      itemTrParam1,            nullptr,      nullptr, },
-	{  BaudRateInt,   Parameters,       Menu::NoItemFlag,   itemBaudRate1,   itemTrBaudRate1,  &baudRateValueInt,      nullptr, },
-	{ BaudRateText,   Parameters,       Menu::NoItemFlag,   itemBaudRate3,   itemTrBaudRate3, &baudRateValueText,      nullptr, },
-	{ BaudRateEnum,   Parameters,       Menu::NoItemFlag,   itemBaudRate2,   itemTrBaudRate2, &baudRateValueEnum,      nullptr, },
-	{       Param3,   Parameters, Menu::ItemValueComplex,      itemParam3,      itemTrParam3,       &param3value,      nullptr, },
-	{  ResetParam3,   Parameters,       Menu::NoItemFlag, itemResetParam3, itemTrResetParam3,            nullptr, &param3reset, },
-	{  FloatParam4,   Parameters,       Menu::NoItemFlag,      itemParam4,      itemTrParam4,       &param4value,      nullptr, },
-	{      EngLang,    Languages,       Menu::NoItemFlag,     itemEngLang,     itemTrEngLang,            nullptr,  &setEnglish, },
-	{      RusLang,    Languages,       Menu::NoItemFlag,     itemRusLang,     itemTrRusLang,            nullptr,  &setRussian, },
-	{     NoMenuId,     NoMenuId,       Menu::NoItemFlag,         nullptr,           nullptr,            nullptr,      nullptr, },
+//             id |   parentId  |                  flags |           name |         translate |                    value |            action
+	{  Application,   RootMenuId,        Menu::NoItemFlag,   "Application",       "Приложение",                   nullptr,            nullptr, },
+	{      Message,  Application,        Menu::NoItemFlag,       "Message",        "Сообщение",                   nullptr,            nullptr, },
+	{      Version,  Application,        Menu::NoItemFlag,       "Version",           "Версия",         &versionValueItem,            nullptr, },
+	{         Exit,  Application,        Menu::NoItemFlag,          "Exit",            "Выход",                   nullptr,            nullptr, },
+	{    RandomInt,   RootMenuId, Menu::ItemValueReadOnly,    "Random Int",  "Случайное целое",       &randomIntValueItem,            nullptr, },
+	{  RandomFloat,   RootMenuId, Menu::ItemValueReadOnly,  "Random Float",  "Случайное плав.",     &randomFloatValueItem,            nullptr, },
+	{   Parameters,   RootMenuId,        Menu::NoItemFlag,     "Paramters",        "Параметры",                   nullptr,            nullptr, },
+	{      Network,   RootMenuId,        Menu::NoItemFlag,       "Network",             "Сеть",                   nullptr,            nullptr, },
+	{    Languages,   Parameters,        Menu::NoItemFlag,     "Languages",            "Языки",                   nullptr,            nullptr, },
+	{      EngLang,    Languages,        Menu::NoItemFlag,       "English",       "Английский",                   nullptr,  &setEnglishAction, },
+	{      RusLang,    Languages,        Menu::NoItemFlag,       "Russian",          "Русский",                   nullptr,  &setRussianAction, },
+	{   RusEngLang,    Languages,        Menu::NoItemFlag,      "Language",             "Язык", &languageEnumKeyValueItem,            nullptr, },
+	{  BaudRateInt,   Parameters, Menu::ItemValueReadOnly,   "BaudRateInt",     "Скорость-Int",     &baudRateIntValueItem,            nullptr, },
+	{ BaudRateEnum,   Parameters,        Menu::NoItemFlag,  "BaudRateEnum",    "Скорость-Enum",    &baudRateEnumValueItem,            nullptr, },
+	{ BaudRateText,   Parameters,        Menu::NoItemFlag,  "BaudRateText",    "Скорость-Text", &baudRateEnumKeyValueItem,            nullptr, },
+	{      ParamIP,      Network,  Menu::ItemValueComplex,   "IP address 1",      "IP адрес 1",             &ip1ValueItem,            nullptr, },
+	{     ParamIP2,      Network,  Menu::ItemValueComplex,   "IP address 2",      "IP адрес 2",             &ip2ValueItem,            nullptr, },
+	{     NoMenuId,     NoMenuId,        Menu::NoItemFlag,         nullptr,            nullptr,                   nullptr,            nullptr, },
 };
 
 MenuNode* mainMenu = menu1;

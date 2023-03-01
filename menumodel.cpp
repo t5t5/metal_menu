@@ -4,6 +4,12 @@ MenuModel::MenuModel(MenuNode* n, MenuId sid /* = RootMenuId */)
 	: node(n)
 	, startId(sid)
 {
+	subscribe(Event::EventParameterChanged);
+}
+
+MenuModel::~MenuModel()
+{
+	unsubscribe();
 }
 
 MenuModelIndex MenuModel::index(
@@ -148,4 +154,22 @@ void MenuModel::setAction(MenuId menuId, AbstractMenuAction* action) const
 {
 	MenuModelIndex index = idx(menuId);
 	index.setAction(action);
+}
+
+void MenuModel::event(Event* e)
+{
+	if (e->eventType() == Event::EventParameterChanged) {
+		ParameterChangedEvent* ee = static_cast<ParameterChangedEvent*>(e);
+		Parameter* p = ee->parameter();
+		const MenuNode* n = node;
+		while (n->id != NoMenuId) {
+			if (n->value && (n->value->parameter() == p)) {
+				MenuModelIndex index = idx(n->id);
+				MenuItemChangedEvent e(index);
+				sendEvent(&e);
+				return;
+			}
+			++n;
+		}
+	}
 }

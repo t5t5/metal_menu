@@ -10,6 +10,8 @@
 
 #include "flag.h"
 
+class Parameter;
+
 using MenuId = char;
 const MenuId NoMenuId = -1;
 const MenuId RootMenuId = 0;
@@ -41,8 +43,6 @@ using PaintFlags = Flag<PaintFlag>;
 
 } // namespace Menu
 
-extern int language;
-
 class AbstractMenuValue
 {
 public:
@@ -55,10 +55,12 @@ public:
 	virtual bool left() = 0;
 	virtual bool right() = 0;
 
-	virtual void apply() = 0;
+	virtual bool apply() = 0;
 	virtual void cancel() = 0;
 
 	virtual void toChar(char* out, int size) const = 0;
+
+	virtual Parameter* parameter() const = 0;
 };
 
 class AbstractMenuAction
@@ -67,29 +69,6 @@ public:
 	virtual ~AbstractMenuAction() { }
 
 	virtual void call() = 0;
-};
-
-template <typename T>
-class SetValueMenuAction : public AbstractMenuAction
-{
-public:
-	SetValueMenuAction(
-			T* valuePtr,
-			T value)
-		: m_valuePtr(valuePtr)
-		, m_value(value)
-	{
-	}
-
-	virtual ~SetValueMenuAction() override { }
-
-	virtual void call() override
-	{
-		*m_valuePtr = m_value;
-	}
-private:
-	T* m_valuePtr;
-	T m_value;
 };
 
 struct MenuNode

@@ -2,6 +2,7 @@
 
 #include "menudefines.h"
 #include "menumodel.h"
+#include "parameters.h"
 
 MenuModelIndex::MenuModelIndex(const MenuModel* model, MenuNode* node, int line)
 	: m_model(model)
@@ -57,7 +58,7 @@ Menu::ItemFlags MenuModelIndex::flags() const
 const char* MenuModelIndex::name() const
 {
 	return m_node
-		? (language == 1) ? m_node->translate : m_node->name
+		? (language->value() == 1) ? m_node->translate : m_node->name
 		: nullptr;
 }
 
@@ -81,4 +82,14 @@ void MenuModelIndex::setAction(AbstractMenuAction* action) const
 {
 	if (!m_node) { return; }
 	m_node->action = action;
+}
+
+bool MenuModelIndex::operator==(const MenuModelIndex& other) const
+{
+	return m_node == other.m_node;
+}
+
+bool MenuModelIndex::operator!=(const MenuModelIndex& other) const
+{
+	return m_node != other.m_node;
 }
