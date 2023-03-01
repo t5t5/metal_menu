@@ -238,7 +238,7 @@ void MenuDialog::start()
 	menuDelegate = new MenuItemDelegate();
 	menuDelegate->setOutWidget(ui->menuText);
 
-	menuModel = new MenuModel(mainMenu);
+	menuModel = new MenuModel(mainMenu, Parameters);
 	menuView = new MenuView();
 	menuView->setModel(menuModel);
 	menuView->setMenuItemDelegate(menuDelegate);

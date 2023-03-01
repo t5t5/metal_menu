@@ -12,11 +12,13 @@
 class MenuModel
 {
 public:
-	MenuModel(MenuNode* n);
+	MenuModel(MenuNode* n, MenuId startId = RootMenuId);
 
 	MenuModelIndex index(int line, const MenuModelIndex& parent = MenuModelIndex()) const;
 	MenuModelIndex idx(MenuId menuId) const;
 	MenuModelIndex parent(const MenuModelIndex& index) const;
+
+	MenuModelIndex start() const;
 
 	bool hasChildren(const MenuModelIndex& parent = MenuModelIndex()) const;
 	int lineCount(const MenuModelIndex& parent = MenuModelIndex()) const;
@@ -32,6 +34,7 @@ public:
 	void setAction(MenuId menuId, AbstractMenuAction* action) const;
 private:
 	MenuNode* node;
+	MenuId startId;
 };
 
 #endif // MENUMODEL_H

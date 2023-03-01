@@ -1,7 +1,8 @@
 #include "menumodel.h"
 
-MenuModel::MenuModel(MenuNode* n)
+MenuModel::MenuModel(MenuNode* n, MenuId sid /* = RootMenuId */)
 	: node(n)
+	, startId(sid)
 {
 }
 
@@ -44,6 +45,11 @@ MenuModelIndex MenuModel::idx(MenuId menuId) const
 		++n;
 	}
 	return MenuModelIndex();
+}
+
+MenuModelIndex MenuModel::start() const
+{
+	return idx(startId);
 }
 
 bool MenuModel::hasChildren(const MenuModelIndex& parent) const

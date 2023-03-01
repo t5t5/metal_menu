@@ -15,7 +15,7 @@ MenuView::MenuView()
 
 void MenuView::reset()
 {
-	m_parentIndex = MenuModelIndex();
+	m_parentIndex = m_model ? m_model->start() : MenuModelIndex();
 	m_currentIndex = m_model ? m_model->index(0, m_parentIndex) : MenuModelIndex();
 	m_lineCount = m_model ? m_model->lineCount(m_parentIndex) : 0;
 	m_mode = WalkMode;
